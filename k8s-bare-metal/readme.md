@@ -4,16 +4,16 @@ I have been working with Kubernetes on the cloud for quite some time now, on GKE
 
 One of the most peculiar aspects of k8s is that it is clearly born in the cloud, and meant to live there. However, there are 2 aspects of it still remained sort of magical to me: 
 
-* Storage: public clouds have a notion of block storage (like EBS), which gets attached to machines. If the machine dies, the disk remains and can be allocated to another instance. Your database is safe, we can keep the data away from the compute and it will survive even dramatic events. In the world of k8s, containers live and die regardless of the underlying hardware, making the construct of EBS somewhat irrelevant (and the emergence of EFS is I guess a consequence of this). 
-* Networking: Once a service is created in k8s as a load balancer, its sole purpose is to be consumed from the outside world. Which means opening an external Load Balancer, and mapping it to the instances and ports that are allocated to its pods. 
+* **Storage**: public clouds have a notion of block storage (like EBS), which gets attached to machines. If the machine dies, the disk remains and can be allocated to another instance. Your database is safe, we can keep the data away from the compute and it will survive even dramatic events. In the world of k8s, containers live and die regardless of the underlying hardware, making the construct of EBS somewhat irrelevant (and the emergence of EFS is I guess a consequence of this). 
+* **Networking**: Once a service is created in k8s as a load balancer, its sole purpose is to be consumed from the outside world. Which means opening an external Load Balancer, and mapping it to the instances and ports that are allocated to its pods. 
 
 Both these aspects are interesting because while they are abstract from the metal, they are not abstract from the cloud. So how do they work when you deploy k8s on bare metal? What are the constructs are needed to offer the same integration? How can I have resilient storage in an easy way for my stateful containers? How can I easily expose functionality to the outside world on a bare metal cluster? Ultimately, can I build a mini PaaS on metal for a startup, or should I stick to the cloud? 
 
 Interestingly enough, there is little information about building a "production like" k8s on metal. Hence the only way to find out is DIY! 
 
-Here start our journey to install k8s on bare metal. In this blog, we will use the toolbox created by CoreOS
+Here start our journey to install k8s on bare metal. In this blog, we will use the toolbox created by CoreOS to install a bare metal Kubernetes cluster. 
 
-[In a next part, we will study the installation of a resilient storage cluster to make sure we manage can stateful containers, and create a proxy / LB for services]
+In a next part, we will study the installation of a resilient storage cluster to make sure we manage can stateful containers, and create a proxy / LB for services. 
 
 # Requirements
 
@@ -56,18 +56,44 @@ The best way to do this at the moment is to use PXE boot or iPXE boot. Fortunate
 ## DHCP Configuration
 ### Fixed Leases
 
-First thing is that want to make sure our machines have a fixed and predicatble IP address. So we configure static mappings in our DHCP server: 
+First thing is that want to make sure our machines have a fixed and predictable IP address. So we configure static mappings in our DHCP server: 
 
-[insert commands here]
+```
+ubnt@ubnt# configure
+ubnt@ubnt# edit service dhcp-server shared-network-name dhcp subnet 192.168.1.0/24
+```
+
+Then, for each of the machines (including the laptop), we do
+
+```
+ubnt@ubnt# set static-mapping <machine-anme> mac-address <xx:xx:xx:xx:xx:xx>
+ubnt@ubnt# set static-mapping <machine-anme> ip-address <Ip.Ad.Dr.eSs>
+```
+
+For example, 
+
+```
+ubnt@ubnt# set static-mapping kube-master mac-address 00:00:00:00:00:01
+ubnt@ubnt# set static-mapping kube-master ip-address 192.168.1.201
+```
+
+Finally commit and save
+
+```
+ubnt@ubnt# commit
+ubnt@ubnt# save
+```
+
+Now we knoow that our machines will be allocated the right IP addresses. On the laptop, donc forget to restart the dhcp client to map to the right address if you do all this in one batch. 
 
 ### iPXE Boot Configuration
 
-This comes from a set of posts found [here]() and [there]()
+This comes from a set of posts found [here](https://blog.laslabs.com/2013/05/pxe-booting-with-ubiquiti-edgerouter/) and [there](http://forum.ipxe.org/showthread.php?tid=7874)
 
-So first we create [2 scripts](/router/config/scripts). The first advertizes that the boot images will be downloaded from http://192.168.1.250 in the case of iPXE, or from TFTP from the same server for "classic" PXE boot. 
+So first we create [2 scripts](/router/config/scripts). The [first](/router/config/scripts/ipxe-green.conf) advertizes that the boot images will be downloaded from http://192.168.1.250 in the case of iPXE, or from TFTP from the same server for "classic" PXE boot. 
 
 ```
-$ cat /config/ipxe-green.conf
+ubnt@ubnt# vi /config/ipxe-green.conf
 
 allow bootp;
 allow booting;
@@ -87,10 +113,10 @@ if exists user-class and option user-class = "iPXE" {
 next-server 192.168.1.250;
 ```
 
-and the second is a generic configuration file for iPXE boot on the router. 
+and the [second](/router/config/scripts/ipxe-green.conf) is a generic configuration file for iPXE options on the router. 
 
 ```
-$ cat /config/ipxe-option-space.conf
+ubnt@ubnt# vi /config/ipxe-option-space.conf
 
 # Declare the iPXE/gPXE/Etherboot option space
 option space ipxe;
@@ -145,10 +171,15 @@ option arch code 93 = unsigned integer 16;
 
 Then we configure the DHCP Server with: 
 
-[insert configuration items]
+```
+ubnt@ubnt# configure
+ubnt@ubnt# set service dhcp-server global-parameters "deny bootp;"
+ubnt@ubnt# set service dhcp-server global-parameters "include &quot;/config/ubnt@ubnt# scripts/ipxe-option-space.conf&quot;;"
+ubnt@ubnt# set service dhcp-server shared-network-name dhcp subnet 192.168.1.0/24 subnet-parameters "include &quot;/config/scripts/ipxe-green.conf&quot;;"
+ubnt@ubnt# set service dhcp-server shared-network-name dhcp authoritative enable
+```
 
-
-In the end, our configuration section for DHCP should look like: 
+In the end, our configuration section for DHCP looks like: 
 
 ```
 service {
@@ -159,7 +190,7 @@ service {
         global-parameters "deny bootp;"
         global-parameters "include &quot;/config/scripts/ipxe-option-space.conf&quot;;"
         hostfile-update disable
-        shared-network-name dhcp1 {
+        shared-network-name dhcp {
             authoritative enable
             subnet 192.168.1.0/24 {
                 default-router 192.168.1.1
@@ -185,9 +216,7 @@ service {
                     mac-address 00:00:00:00:00:00
                 }
                 subnet-parameters "option option-deco &quot;:::::239.0.2.10:22222:v6.0:239.0.2.30:22222&quot;;"
-                subnet-parameters "filename &quot;/boot.ipxe&quot;;"
                 subnet-parameters "include &quot;/config/scripts/ipxe-green.conf&quot;;"
-                tftp-server-name 192.168.1.250
             }
         }
     }
@@ -199,44 +228,69 @@ You will have noted that we published our "next-server" to 192.168.1.250, which 
 
 ### Pre requisites
 
-OK first let us build a tree to store our files in the home directory
+OK first let have a look at the tftpboot files we cloned in the home directory
 
 ```
-cd ~
-mkdir -p \
-    k8s-bare-metal/assets \
-    k8s-bare-metal/assets/tftpboot \
-    k8s-bare-metal/assets/tls \
-    k8s-bare-metal/ignition \
-    k8s-bare-metal/groups \
-    k8s-bare-metal/profiles \
-    k8s-bare-metal/src    
+.
+├── assets
+│   ├── tftpboot
+│   │   ├── grub.efi
+│   │   ├── ipxe.efi
+│   │   ├── ipxe.lkrn
+│   │   ├── ipxe.pxe
+│   │   ├── pxelinux.cfg
+│   │   │   └── default
+│   │   └── undionly.kpxe
+  
 ```
 
-Now let's download the repository & gather the images for PXE boot. You'll need to check the latest versions on [this page](https://github.com/coreos/coreos-baremetal/tree/master/examples), the ones here are given as the current recommended elements.
+the pxelinux.cfg/default is a very simple no menu PXE boot, and we have all the necessary EFI, PXE and iPXE boot files there so you do not have to download them from [ipxe.org](http://ipxe.org)
+
+Now let's download the CoreOS repository & gather the CoreOS images for PXE boot. You'll need to check the latest versions on [this page](https://github.com/coreos/coreos-baremetal/tree/master/examples), the ones here are given as the current recommended elements.
 
 ```
 cd ~/k8s-bare-metal/src
-COREOS_BRANCH=alpha
-LASTEST_COREOS=1053.2.0
+export COREOS_BRANCH=alpha
+export LASTEST_COREOS=1053.2.0
 git clone https://github.com/coreos/coreos-baremetal.git
 ./coreos-baremetal/scripts/get-coreos ${COREOS_BRANCH} ${LASTEST_COREOS} ~/k8s-bare-metal/assets
 ```
 
-This will take a few minutes depending on your connection, so feel free to open another terminal 
+This will take a few minutes depending on your connection, so feel free to open another terminal. In the end, your assets directory will look like: 
 
-We also need a set of boot files for PXE, which are freely available on the [PXE website]. They are present on the GitHub of this blog post, so you can just use them instead of downloading them all.
+```
+.
+├── assets
+│   ├── coreos
+│   │   └── 1053.2.0
+│   │       ├── CoreOS_Image_Signing_Key.asc
+│   │       ├── coreos_production_image.bin.bz2
+│   │       ├── coreos_production_image.bin.bz2.sig
+│   │       ├── coreos_production_pxe_image.cpio.gz
+│   │       ├── coreos_production_pxe_image.cpio.gz.sig
+│   │       ├── coreos_production_pxe.vmlinuz
+│   │       └── coreos_production_pxe.vmlinuz.sig
+│   ├── tftpboot
+│   │   ├── .....
+```
 
-Now we need to download a couple of Docker images 
+Now we need to download a few Docker images 
 
 ```
 docker pull quay.io/coreos/bootcfg:latest
 docker pull quay.io/coreos/dnsmasq:latest
 docker pull cfssl/cfssl:latest
-
 ```
 
-At this point we have the ground work covered, but we need to configure the various services that will install our machines. 
+And finally let us download the cfssljson binary: 
+
+```
+curl -s -L -o cfssljson https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+chmod +x cfssljson
+sudo mv cfssljson /usr/local/bin/
+```
+
+At this point we have the ground installation work covered, but we need to configure the various services that will install our machines. 
 
 ## Ignition Boot Configuration
 
@@ -244,10 +298,10 @@ Ignition is the mini service created by CoreOS to quickly install machines from 
 
 The installation sequence comes in 2 phases
 
-1. Installation of CoreOS on the metal: this is just dumping the OS on the first disk and rebooting
-2. Configuration of CoreOS to become master, worker, or even other things (it is a cloud init file like on the cloud, so this blog can be adapted to other setups)
+1. Installation of CoreOS on the metal: this is just dumping the OS on the first disk, downloading config files and rebooting
+2. Configuration of CoreOS to become master, worker, or even other things on the second boot (it is a cloud init file like on the cloud, so this blog can be adapted to other setups)
 
-Let us create the files required for this: 
+Let us look at the files required for this in our tree: 
 
 ```
 .
@@ -265,6 +319,7 @@ Let us create the files required for this:
 │   ├── k8s-master-install.json
 │   └── k8s-worker-install.json
 ```
+
 What is important is the link between these files: 
 
 [Insert Schema here]
@@ -404,7 +459,7 @@ In the cfssl folder, you will find a series of json files that can be used in co
 Let us first create an alias to run the cfssl container in an easier way: 
 
 ```
-alias cfssl="docker run --rm -name cfssl cfssl/cfssl "
+alias cfssl="docker run --rm --name cfssl -v ~/k8s-bare-metal/cfssl:/etc/cfssl cfssl/cfssl"
 ```
 
 ## Initialize a root CA
@@ -412,14 +467,15 @@ alias cfssl="docker run --rm -name cfssl cfssl/cfssl "
 First of all we need a Certificate Authority to generate more certs
 
 ```
-$ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+$ cd ~/k8s-bare-metal/cfssl
+$ cfssl gencert -initca /etc/cfssl/ca-csr.json | cfssljson -bare ca
 ```
 
 Settings can be changed in the ca-csr.json file. The most important is the validity, which is set here at 10 years but you can certainly change that. Note also the profiles that are set
 
-* server: for server side certs
-* client: for client side only
-* client-server: does both. It is the profile used for etcd peer network for example (not used here)
+* **server**: for server side certs
+* **client**: for client side only
+* **client-server**: does both. It is the profile used for etcd peer network for example (not used in our setup)
 
 ## Generate Server and Client Certs
 
@@ -428,14 +484,14 @@ Settings can be changed in the ca-csr.json file. The most important is the valid
 ```
 cd ~/k8s-bare-metal-assets/cfssl
 cfssl gencert \
-  -ca=ca.pem \
-  -ca-key=ca-key.pem \
-  -config=ca-config.json \
+  -ca=/etc/cfssl/ca.pem \
+  -ca-key=/etc/cfssl/ca-key.pem \
+  -config=/etc/cfssl/ca-config.json \
   -profile=server \
-  apiserver-csr.json | cfssljson -bare apiserver
+  /etc/cfssl/apiserver-csr.json | cfssljson -bare apiserver
 ```
 
-Results:
+This will generate 3 files in the current directory:
 
 ```
 apiserver-key.pem
@@ -443,41 +499,124 @@ apiserver.csr
 apiserver.pem
 ```
 
+Now let us do the same for the other roles.
+
 * Kubelet / Proxy (Workers)
 
 ```
 cfssl gencert \
-  -ca=ca.pem \
-  -ca-key=ca-key.pem \
-  -config=ca-config.json \
+  -ca=/etc/cfssl/ca.pem \
+  -ca-key=/etc/cfssl/ca-key.pem \
+  -config=/etc/cfssl/ca-config.json \
   -profile=client \
-  worker-csr.json | cfssljson -bare worker
+  /etc/cfssl/worker-csr.json | cfssljson -bare worker
 ```
 
 * kubectl CLI (Users)
 
 ```
 cfssl gencert \
-  -ca=ca.pem \
-  -ca-key=ca-key.pem \
-  -config=ca-config.json \
+  -ca=/etc/cfssl/ca.pem \
+  -ca-key=/etc/cfssl/ca-key.pem \
+  -config=/etc/cfssl/ca-config.json \
   -profile=client \
-  admin.csr.json | cfssljson -bare admin
+  /etc/cfssl/admin.csr.json | cfssljson -bare admin
 ```
 
 ## Move assets to TLS folder
 
 ```
-mv *.pem *.csr ~/k8s-bare-metal-assets/tls
+mv *.pem *.csr ~/k8s-bare-metal-assets/tls/
 ```
 
+## Creating the kubeconfig file
 
+```
+cd ~/k8s-bare-metal-assets/
+./bin/kube-conf.sh ./assets/tls 192.168.1.201
+```
 
+# Summary before the action
 
+So far we have 
 
-sudo docker run -p 80:80 --rm -v /home/scozannet/Documents/src/coreos/bootcfg:/var/lib/bootcfg:Z -v /home/scozannet/Documents/src/coreos/bootcfg/groups:/var/lib/bootcfg/groups:Z quay.io/coreos/bootcfg:latest -address=0.0.0.0:80 -log-level=debug
+* Installed and plugged our devices and assets into the network, but let them off
+* Configured our router to handle iPXE/PXE boot and forward these requests to our laptop
+* Configured all the files on the laptop to handle installation and configuration of 3 CoreOS devices into an etcd and k8s, with 1 master and 2 workers
+* Downloaded a few docker containers to operate the CoreOS main systems
+* Created all security assets (CA + certs) to secure communication between the various k8s components
+* Created a kubeconfig file to be able to communicate with our cluster
 
-sudo docker run --rm --cap-add=NET_ADMIN -p 69:69/udp -v /home/scozannet/Documents/src/coreos/bootcfg/assets/tftpboot:/var/lib/tftpboot quay.io/coreos/dnsmasq -d -q --enable-tftp --tftp-root=/var/lib/tftpboot
+We are now ready to start!! 
+
+# It's RUNTIME!!
+## Starting services on laptop
+
+On our laptop, let us start the required tools
+
+* **tftpboot**: we use the CoreOS dnsmasq image, but limit it to only run TFTP. This container must run privileged, and access our TFTP files. As it will use a privileged port on the host system we have to sudo its run: 
+
+```
+sudo docker run \
+  --rm \
+  --cap-add=NET_ADMIN \
+  -p 69:69/udp \
+  -v ~/k8s-bare-metal/assets/tftpboot:/var/lib/tftpboot \
+  quay.io/coreos/dnsmasq -d -q --enable-tftp --tftp-root=/var/lib/tftpboot
+```
+
+**Note**: this dnsmasq image from CoreOS can also do all the dhcp management and serve a mini DNS server. We did not use it because in traditional home setups the DHCP is provided by the router and it could create DHCP conflicts. If you operate in a separate LAN and do not want to configure a specific DHCP system, this might be a good option. 
+
+* **bootcfg**: we use the CoreOS bootcfg image. This container must run privileged, and access our assets and Ignitionn files. As it will use a privileged port on the host system we have to sudo its run: 
+
+In a separate terminal, run
+
+```
+sudo docker run \
+  -p 80:80 \
+  --rm \
+  -v ~/k8s-bare-metal:/var/lib/bootcfg:Z \
+  -v ~/k8s-bare-metal/groups:/var/lib/bootcfg/groups:Z \
+  quay.io/coreos/bootcfg:latest -address=0.0.0.0:80 -log-level=debug
+```
+
+At this point, we are serving TFTP files and the Ignition server from our 192.168.1.250 laptop. 
+
+## Starting the nodes
+
+Start what is supposed to become the master, and access the BIOS. From there, double click on the network boot option. It reboots into PXE mode. After a little while you should see some logs popping up in the 2 docker containers serving TFTP and bootcfg. 
+
+You should then on the NUC screen if there is one see that it is dumping CoreOS to disk, and, after about 1min, rebooting. On the second boot, it will apply the configuration and you should have the traditional CLI welcome screen. 
+
+Repeat the operation with the 2 slaves. When they all have installed their systems, open a third terminal and 
+
+```
+$ kubectl --kubeconfig=~/k8s-bare-metal/assets/tls/kubeconfig get nodes
+NAME            STATUS    AGE
+192.168.1.201   Ready     23d
+192.168.1.211   Ready     23d
+192.168.1.212   Ready     23d
+```
+
+and 
+
+```
+$ kubectl --kubeconfig=~/k8s-bare-metal/assets/tls/kubeconfig get svc --all-namespaces
+NAMESPACE         NAME                     CLUSTER-IP   EXTERNAL-IP   PORT(S)                            AGE
+default           kubernetes               10.3.0.1     <none>        443/TCP                            23d
+kube-system       heapster                 10.3.0.51    <none>        80/TCP                             23d
+kube-system       kube-dns                 10.3.0.10    <none>        53/UDP,53/TCP                      23d
+```
+
+# Conclusion
+
+This was a pretty long post, and we only covered the first phase of our journey. Remember, the initial reason why we did all this was to understand how k8s on Bare Metal would handle exposing services on the network, and understand how we could setup a cloud-like storage service for it. Well, now we have a bare metal k8s cluster, so we can certainly move forward and start playing with it. 
+
+Next on the roadmap is deploying a Ceph cluster on the same set of hosts, to expose a scale out storage system to our mini cluster. 
+
+Then we will see how we can use some k8s contrib projects to expose services on the network. 
+
+And finally, once we will have done all that, we will install Deis and have a pure self hosted, stateful-compliant PaaS for our beloved developers! 
 
 # References 
 ## PXE Configuration
@@ -489,13 +628,13 @@ https://docs.oracle.com/cd/E19045-01/b200x.blade/817-5625-10/Linux_Troubleshooti
 
 ## Ubiquity Edge Configuration
 
+https://blog.laslabs.com/2013/05/pxe-booting-with-ubiquiti-edgerouter/
 
+## CoreOS
 
-## CoreOS on Bare Metal
-
+https://coreos.com/
 https://github.com/coreos/coreos-baremetal/blob/master/Documentation/kubernetes.md
 
 ## CloudFlare SSL 
 
-
-
+https://cfssl.org/

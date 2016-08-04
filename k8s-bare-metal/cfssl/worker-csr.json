@@ -2,8 +2,8 @@
   "CN": "kubelet",
   "O": "Mad Eden S.L",
   "hosts": [
-    "192.168.1.211"
-    "192.168.1.212"
+    "192.168.1.211",
+    "192.168.1.212",
     "127.0.0.1",
     "kubernetes",
     "kubernetes.default",

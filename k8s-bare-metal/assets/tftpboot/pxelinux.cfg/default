@@ -4,6 +4,4 @@ default iPXE
 LABEL iPXE
   MENU LABEL Booting ipxe.lkrn
   KERNEL ipxe.lkrn
-  # APPEND dhcp && chain http://192.168.1.250/ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}&domain=${domain}&hostname=${hostname}&serial=${serial}
-  # APPEND dhcp && chain http://192.168.1.250/ipxe?uuid=${uuid}&mac=${net0/mac:hexhyp}
   APPEND dhcp && chain http://192.168.1.250/boot.ipxe
