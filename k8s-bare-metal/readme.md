@@ -19,9 +19,9 @@ In a next part, we will study the installation of a resilient storage cluster to
 
 For this setup, we will need: 
 
-* a home router that can offer some advanced configuration. In my case, I use a Ubiquity EdgeRouter. Any OpenWRT system should work (and feel free to propose configs for this). If you do not have such machine, then you can emulate what is needed, but you will have to disable DHCP on your network while you do the setup, or do it on a separate VLAN/network. You will need at least 4 available ethernet ports. 
-* 3 Intel NUCs: we will want one master and 2 workers for a basic setup. k8s is not power so you should be ok with 4 to 8GB RAM and core i5 systems. For my setup, I re used a former  Gen5 5i7RYH (core i7, 16GB RAM, 256GB SSD + 250GB M.2 SSD), and I added 2 Gen6 6i5SYH (core i5 6400, 32GB RAM, 480GB SSD + 250GB M.2 SSD)
-* A laptop connected to the same network with a cable (no wireless) and with the below capabilities:
+* a **home router** that can offer some advanced configuration. In my case, I use a [Ubiquity EdgeRouter](https://www.ubnt.com/edgemax/edgerouter/). Any OpenWRT system should work (and feel free to propose configs for this). If you do not have such machine, then you can emulate what is needed, but you will have to disable DHCP on your network while you do the setup, or do it on a separate VLAN/network. You will need at least 4 available ethernet ports. 
+* **3 Intel NUCs**: we will want one master and 2 workers for a basic setup. k8s is not power so you should be ok with 4 to 8GB RAM and core i5 systems. For my setup, I re used a former  Gen5 5i7RYH (core i7, 16GB RAM, 256GB SSD + 250GB M.2 SSD), and I added 2 Gen6 6i5SYH (core i5 6400, 32GB RAM, 480GB SSD + 250GB M.2 SSD)
+* A **laptop** connected to the same network with a cable (no wireless) and with the below capabilities:
   * Running docker containers 
   * Go 1.5+ installed and GOPATH configured, Go binaries folder added to PATH
   * Ports 80/tcp and 69/udp available
@@ -54,7 +54,7 @@ The main benefit of this will be that the whole procedure is repeatable. Build o
 The best way to do this at the moment is to use PXE boot or iPXE boot. Fortunately our Intel NUCs are compliant with iPXE, so we are good with that. 
 
 ## DHCP Configuration
-### Fixed Leases
+### [Fixed Leases](https://www.ubnt.com/edgemax/edgerouter/)
 
 First thing is that want to make sure our machines have a fixed and predictable IP address. So we configure static mappings in our DHCP server: 
 
@@ -84,7 +84,7 @@ ubnt@ubnt# commit
 ubnt@ubnt# save
 ```
 
-Now we knoow that our machines will be allocated the right IP addresses. On the laptop, donc forget to restart the dhcp client to map to the right address if you do all this in one batch. 
+Now we know that our machines will be allocated the right IP addresses. On the laptop, donc forget to restart the dhcp client to map to the right address if you do all this in one batch. 
 
 ### iPXE Boot Configuration
 
@@ -418,7 +418,7 @@ The arguments are defined by:
 
 So the command line will run the install.service, which dumps the CoreOS image to /dev/sda, using another ignition profile, downloaded via ```/usr/bin/curl {{.ignition_endpoint}}?{{.query}}&os=installed -o ignition.json```. 
 
-If we look into the other group files (below example of the groups/kube-mater.json, we see that there is a selector by MAC Address and installation status. 
+If we look into the other group files (below example of the groups/kube-mater.json), we see that there is a selector by MAC Address and installation status. 
 
 ```
 {
@@ -432,7 +432,7 @@ If we look into the other group files (below example of the groups/kube-mater.js
 }
 ```
 
-So our first CoreOS node, running the PXE version of CoreOS, will now get access this group as it declares it is installed and gives away its MAC address, which will direct it to the k8s-master-install.json profile, and finally the k8s-master.yaml ignition file. 
+So our first CoreOS node, running the PXE version of CoreOS, will now get access this group as it declares it is installed and gives away its MAC address, which will direct it to the k8s-master-install.json profile, and finally render the k8s-master.yaml ignition file. 
 
 The same will happen with different profiles for our worker nodes. 
 
@@ -440,12 +440,12 @@ The same will happen with different profiles for our worker nodes.
 
 The ignition init files are extremely similar to cloud init file **BUT THEY ARE NOT THE SAME** (and it is a shame as I cannot find any thing that prevents them from being shared beyond references to the underlying file system for each and every file)
 
-They essentially declare waht units will run on our beloved nodes and so on. The setup we have here installs: 
+They essentially declare what units will run on our beloved nodes and so on. The setup we have here installs: 
 
-* etcd cluster: as we have 3 machines, why not have them operate an HA etcd ring? However, this is not (yet) a TLS enabled etcd cluster, so communications will be in clear at this point
-* k8s cluster: 1 master and 2 workers as discussed. TLS is enabled for the API Server so communications are encrypted at least at this level.
+* **etcd cluster**: as we have 3 machines, why not have them operate an HA etcd ring? However, this is not (yet) a TLS enabled etcd cluster, so communications will be in clear at this point
+* **k8s cluster**: 1 master and 2 workers as discussed. TLS is enabled for the API Server so communications are encrypted at least at this level.
 
-If you are familiar with k8s, you should not have any surprise there. Note however 
+If you are familiar with k8s, you should not have any surprise there as this is essentially what CoreOS ships as examples with the core-baremetal project. Note however 
 
 * the additional dropin for Docker to enable unsecure registries. You do not have to accept that and can safely remove that item. I use it as the next stage of the cluster is to run a Deis PaaS and by default an unsecure registry is needed. This also adds a k8s startup option. 
 * some log rotate information inherited from a few experiences with small disks on AWS. 
@@ -607,6 +607,30 @@ default           kubernetes               10.3.0.1     <none>        443/TCP   
 kube-system       heapster                 10.3.0.51    <none>        80/TCP                             23d
 kube-system       kube-dns                 10.3.0.10    <none>        53/UDP,53/TCP                      23d
 ```
+
+# Changing the configuration
+
+Let us say you would like to replicate this setup at home, but your setup is a bit different. This is what you need to take care of: 
+
+* replace the MAC Addresses of the machines: For each MAC, run something like: 
+
+```
+cd ~/k8s-bare-metal
+find . -type f -exec sed -i #00:00:00:00:00:01#aa:bb:cc:dd:ee:ff# {} \;
+```
+
+* replace the IP Addresses of the machines: For each IP, run something like: 
+
+```
+cd ~/k8s-bare-metal
+find . -type f -exec sed -i #192.168.1.201#192.168.123.231# {} \;
+```
+
+* Replace SSH Keys: In each of the **groups/kube-*.json** there is a **PutYourSshKeyHere** word. Replace it with your public key to add yourself to the nodes
+
+* Update CFSSL Configuration: Edit the **cfssl/ca*.json** files to adapt
+
+* Update k8s configuration: Edit the **ignition/*.yaml** files
 
 # Conclusion
 
