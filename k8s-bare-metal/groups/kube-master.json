@@ -1,0 +1,26 @@
+{
+  "id": "kube-master",
+  "name": "Master Node",
+  "profile": "k8s-master-install",
+  "selector": {
+    "os": "installed",
+    "mac": "00:00:00:00:00:01"
+  },
+  "metadata": {
+    "etcd_initial_cluster": "kube-master=http://192.168.1.201:2380,kube-worker-1=http://192.168.1.211:2380,kube-worker-2=http://192.168.1.212:2380",
+    "etcd_name": "kube-master",
+    "fleet_metadata": "role=etcd,name=kube-master",
+    "ipv4_address": "192.168.1.201",
+    "k8s_cert_endpoint": "http://192.168.1.250/assets",
+    "k8s_dns_service_ip": "10.3.0.10",
+    "k8s_etcd_endpoints": "http://192.168.1.201:2379,http://192.168.1.211:2379,http://192.168.1.212:2379",
+    "k8s_pod_network": "10.2.0.0/16",
+    "k8s_service_ip_range": "10.3.0.0/24",
+    "networkd_address": "192.168.1.201/24",
+    "networkd_dns": "192.168.1.1",
+    "networkd_gateway": "192.168.1.1",
+    "ssh_authorized_keys": [
+      "ssh-rsa PutYourSshKeyHere"
+    ]
+  }
+}

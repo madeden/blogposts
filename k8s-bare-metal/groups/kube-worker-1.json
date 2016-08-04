@@ -1,0 +1,25 @@
+{
+  "id": "kube-worker-1",
+  "name": "Worker 1",
+  "profile": "k8s-worker-install",
+  "selector": {
+    "os": "installed",
+    "mac": "00:00:00:00:00:11"
+  },
+  "metadata": {
+    "etcd_initial_cluster": "kube-master=http://192.168.1.201:2380,kube-worker-1=http://192.168.1.211:2380,kube-worker-2=http://192.168.1.212:2380",
+    "etcd_name": "kube-worker-1",
+    "fleet_metadata": "role=etcd,name=kube-worker-1",
+    "ipv4_address": "192.168.1.211",
+    "k8s_cert_endpoint": "http://192.168.1.250/assets",
+    "k8s_controller_endpoint": "https://192.168.1.201",
+    "k8s_dns_service_ip": "10.3.0.10",
+    "k8s_etcd_endpoints": "http://192.168.1.201:2379,http://192.168.1.211:2379,http://192.168.1.212:2379",
+    "networkd_address": "192.168.1.211/24",
+    "networkd_dns": "192.168.1.1",
+    "networkd_gateway": "192.168.1.1",
+    "ssh_authorized_keys": [
+      "ssh-rsa PutYourSshKeyHere"
+    ]
+  }
+}

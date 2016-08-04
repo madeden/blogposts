@@ -1,0 +1,27 @@
+{
+  "CN": "kubelet",
+  "O": "Mad Eden S.L",
+  "hosts": [
+    "192.168.1.211"
+    "192.168.1.212"
+    "127.0.0.1",
+    "kubernetes",
+    "kubernetes.default",
+    "kubernetes.default.svc",
+    "kubernetes.default.svc.cluster.local",
+    "*.k8s.madeden.net"    
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "New York",
+      "O": "Mad Eden S.L",
+      "OU": "kube-ca",
+      "ST": "New York"
+    }
+  ]
+}
