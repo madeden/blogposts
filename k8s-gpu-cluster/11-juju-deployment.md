@@ -48,7 +48,7 @@ Bootstrap complete, maas-controller now available.
 
 And the MAAS GUI: 
 
-![MAAS GUI](/pics/bootstrapping.png)
+![MAAS GUI](/k8s-gpu-cluster/pics/bootstrapping.png)
 
 ## Initial bundle deployment
 
@@ -173,7 +173,7 @@ deployment of bundle "k8s.yaml" completed
 
 Which translates in the GUI as: 
 
-![MAAS GUI](/pics/deploying-k8s.png)
+![MAAS GUI](/k8s-gpu-cluster/pics/deploying-k8s.png)
 
 ```
 $ juju status
@@ -220,7 +220,7 @@ MACHINE  STATE    DNS           INS-ID  SERIES  AZ
 
 or 
 
-![MAAS GUI](/pics/deploying-k8s-2.png)
+![MAAS GUI](/k8s-gpu-cluster/pics/deploying-k8s-2.png)
 
 At the end of the process we have: 
 

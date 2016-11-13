@@ -1,6 +1,6 @@
 # Building a Bare Metal GPU cluster for Kubernetes (and more)
 
-I don't know if you have ever seen one of the ![Orange Boxes](/pics/obv4.png) from Canonical, but these are pretty sleek machines. They contain 10 Intel NUCs, plus an 11th one for the management. They are used as a demonstration tool for modeling big software such as OpenStack, Hadoop, and... Kubernetes. 
+I don't know if you have ever seen one of the ![Orange Boxes](/k8s-gpu-cluster/pics/obv4.png) from Canonical, but these are pretty sleek machines. They contain 10 Intel NUCs, plus an 11th one for the management. They are used as a demonstration tool for modeling big software such as OpenStack, Hadoop, and... Kubernetes. 
 
 Using one of these, associated with Ubuntu, MAAS (Metal As A Service) and Juju (Big Software Modeling Tool), you can essentially deploy open source "models" of complex software stack. This is extremely useful for customer demos, but also for labs, R&D departments, or just for fun. Anyone can buy one from [TranquilPC](http://cluster.engineering/ubuntu-orangebox-v4-fully-configured/) 
 

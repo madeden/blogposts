@@ -258,7 +258,7 @@ After we name them, we will also
 
 We then have something like 
 
-![this screen](/pics/all-6-nodes-new.png)
+![this screen](/k8s-gpu-cluster/pics/all-6-nodes-new.png)
 
 ## Commissioning nodes
 
@@ -282,13 +282,13 @@ We will then need to manually start the nodes. They will automagically be powere
 
 During the process, the status of the node will change from **New** to **Commissioning** like in the below pics:
 
-![Single Node](/pics/commissioning.png)
+![Single Node](/k8s-gpu-cluster/pics/commissioning.png)
 
-![List View](/pics/commissioning-2.png)
+![List View](/k8s-gpu-cluster/pics/commissioning-2.png)
 
 When commissioning is successful, we see all the values for HDD size, nb cores and memory filled. There is no column for GPU though. The node also becomes **Ready**
 
-![View of all statuses](/pics/commissioning-nodes.png)
+![View of all statuses](/k8s-gpu-cluster/pics/commissioning-nodes.png)
 
 # Next Steps
 

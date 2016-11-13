@@ -13,7 +13,7 @@ I just had to buy
 
 I pass on the screen and various normal requirements that everyone doing this would have anyway.
 
-There you go, ![the NUC, PSU and Card booting Ubuntu](/pics/nuc-external-card.jpg)
+There you go, ![the NUC, PSU and Card booting Ubuntu](/k8s-gpu-cluster/pics/nuc-external-card.jpg)
 
 What is interesting: 
 
@@ -65,29 +65,29 @@ The GPU do not fit into the NUCs case, so we have to "explode" them. We'll use a
 
 On one side, we attach the GPU so the power connector is visible at the bottom, and the PCI-e port just slightly rises over the edge. The holes are 2.8mm so that the M3 goes through but you need to screw them a little bit and they don't move. 
 
-![GPU Side](/pics/video-card-view.jpg)
+![GPU Side](/k8s-gpu-cluster/pics/video-card-view.jpg)
 
 On the other side, we drill the fixation holes fro SSD and Intel NUC so that the PCI-e riser cable is aligned in front of the PCI-e port of the GPU. You'll also have to drill the SSD metal support a little bit. 
 
-![NUC Side](/pics/nuc-view.jpg)
+![NUC Side](/k8s-gpu-cluster/pics/nuc-view.jpg)
 
 As you can see on the picture, we place the riser between the PEC and the NUC
 
-![PSU Cables](/pics/nuc-view.jpg)
+![PSU Cables](/k8s-gpu-cluster/pics/nuc-view.jpg)
 
 ## Cluster
 
 We repeat the operation 4 times for each node. Then using our 50mm M3 hexa, we attach them with 3 screws between each "blade" to obtain
 
-![Cluster - NUC Side](/pics/cluster-view-top-side.jpg)
+![Cluster - NUC Side](/k8s-gpu-cluster/pics/cluster-view-top-side.jpg)
 
-![Cluster - NUC Side](/pics/cluster-view-cpu-side.jpg)
+![Cluster - NUC Side](/k8s-gpu-cluster/pics/cluster-view-cpu-side.jpg)
 
-![Cluster - GPU Side](/pics/cluster-view-gpu-side.jpg)
+![Cluster - GPU Side](/k8s-gpu-cluster/pics/cluster-view-gpu-side.jpg)
 
-![Cluster - GPU Side](/pics/cluster-view-close-up-gpu-side.jpg)
+![Cluster - GPU Side](/k8s-gpu-cluster/pics/cluster-view-close-up-gpu-side.jpg)
 
-![Cluster - GPU Side](/pics/cluster-view-close-up-cpu-side.jpg)
+![Cluster - GPU Side](/k8s-gpu-cluster/pics/cluster-view-close-up-cpu-side.jpg)
 
 Now we can plug the network, and power and we are good to go
 

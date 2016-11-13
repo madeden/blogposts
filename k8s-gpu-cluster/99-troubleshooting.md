@@ -6,8 +6,7 @@ tgt is the tool to manage the iSCSI endpoints used to start machines. It uses a 
 Each mount point consumes a little bit of memory, so having too many is not a good idea, especially on a little rpi. It seems MAAS creates a lot of replication in this file, hence on the raspberry pi can crash. This translates into log lines in **/var/log/maas/maas.log** showing: 
 
 ```
-Nov  8 15:47:56 maasberry maas.service_monitor: [ERROR] While monitoring service 'tgt' an error was encountered: Unable to parse the active state from systemd for service 'tgt', active state reported as 'deactivating'.
-Nov  8 15:48:56 maasberry maas.service_monitor: [ERROR] While monitoring service 'tgt' an error was encountered: Unable to parse the active state from systemd for service 'tgt', active state reported as 'deactivating'.
+Nov  8 15:47:56 maasberry maas.service_monitor: [ERROR] While monitoring service 'tgt' an error was encountered: Unable to parse the active state from systemd for service 'tgt', active state reported as 'deactivating'. Nov  8 15:48:56 maasberry maas.service_monitor: [ERROR] While monitoring service 'tgt' an error was encountered: Unable to parse the active state from systemd for service 'tgt', active state reported as 'deactivating'.
 Nov  8 15:49:56 maasberry maas.service_monitor: [ERROR] While monitoring service 'tgt' an error was encountered: Unable to parse the active state from systemd for service 'tgt', active state reported as 'deactivating'.
 ```
 
