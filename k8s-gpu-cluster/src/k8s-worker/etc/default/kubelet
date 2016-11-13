@@ -1,0 +1,5 @@
+# Security Context
+KUBE_ALLOW_PRIV="--allow-privileged=true"
+
+# Add your own!
+KUBELET_ARGS="--experimental-nvidia-gpus=1 --require-kubeconfig --kubeconfig=/srv/kubernetes/config --cluster-dns=10.1.0.10 --cluster-domain=cluster.local"

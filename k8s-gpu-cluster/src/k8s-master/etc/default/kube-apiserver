@@ -1,0 +1,2 @@
+# Security Context
+KUBE_ALLOW_PRIV="--allow-privileged=true"
