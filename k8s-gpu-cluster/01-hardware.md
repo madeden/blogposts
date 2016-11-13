@@ -73,8 +73,6 @@ On the other side, we drill the fixation holes fro SSD and Intel NUC so that the
 
 As you can see on the picture, we place the riser between the PEC and the NUC
 
-![PSU Cables](/k8s-gpu-cluster/pics/nuc-view.jpg)
-
 ## Cluster
 
 We repeat the operation 4 times for each node. Then using our 50mm M3 hexa, we attach them with 3 screws between each "blade" to obtain
