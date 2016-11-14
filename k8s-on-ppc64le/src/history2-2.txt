@@ -1,0 +1,1000 @@
+   26  ./scripts/install_deps.sh
+   27  cat scripts/install_deps.
+   28  cat scripts/install_deps.sh 
+   29  cd ../
+   30  wget http://llvm.org/releases/3.9.0/llvm-3.9.0.src.tar.xz
+   31  tar xjf llvm-3.9.0.src.tar.xz
+   32  tar xf llvm-3.9.0.src.tar.xz
+   33  debuild -us -uc -b
+   34  sudo apt install devscripts
+   35  cd llvm-3.9.0.src/
+   36  debuild -us -uc -b
+   37  cd ..
+   38  debcheckout svn://anonscm.debian.org/svn/pkg-llvm/llvm-toolchain/
+   39  sudo apt install svn
+   40  sudo apt install subversion
+   41  debcheckout svn://anonscm.debian.org/svn/pkg-llvm/llvm-toolchain/
+   42  cd llvm-toolchain/
+   43  sh branches/3.9/debian/orig-tar.sh 
+   44  cd branches/
+   45  sh unpack.sh 
+   46  cd ../..
+   47  ls
+   48  rm -rf llvm-*
+   49  apt-cache search llvm
+   50  ls
+   51  mkdir build
+   52  wget http://llvm.org/releases/3.9.0/llvm-3.9.0.src.tar.xz
+   53  wget http://llvm.org/releases/3.9.0/cfe-3.9.0.src.tar.xz
+   54  wget http://llvm.org/releases/3.9.0/compiler-rt-3.9.0.src.tar.xz
+   55  mv *.tar.xz build/
+   56  cd build/
+   57  tar -xf ../cfe-3.9.0.src.tar.xz -C tools && tar -xf ../compiler-rt-3.9.0.src.tar.xz -C projects && mv tools/cfe-3.9.0.src tools/clang && mv projects/compiler-rt-3.9.0.src projects/compiler-rt
+   58  ls
+   59  mv * ..
+   60  tar -xf ../cfe-3.9.0.src.tar.xz -C tools && tar -xf ../compiler-rt-3.9.0.src.tar.xz -C projects && mv tools/cfe-3.9.0.src tools/clang && mv projects/compiler-rt-3.9.0.src projects/compiler-rt
+   61  ls
+   62  ls ..
+   63  tar -xf ../cfe-3.9.0.src.tar.xz -C tools
+   64  ls
+   65  mkdir tools
+   66  tar -xf ../cfe-3.9.0.src.tar.xz -C tools
+   67  ls
+   68  ls tools/
+   69  mkdir projects
+   70  tar -xf ../compiler-rt-3.9.0.src.tar.xz -C projects
+   71  mv tools/cfe-3.9.0.src tools/clang
+   72  mv projects/compiler-rt-3.9.0.src projects/compiler-rt
+   73  mkdir -v build && cd       build && CC=gcc CXX=g++                              cmake -DCMAKE_INSTALL_PREFIX=/usr                 -DLLVM_ENABLE_FFI=ON                        -DCMAKE_BUILD_TYPE=Release                  -DLLVM_BUILD_LLVM_DYLIB=ON                  -DLLVM_TARGETS_TO_BUILD="host;AMDGPU"       -Wno-dev ..                           && make
+   74  sudo apt install cmake
+   75  mkdir -v build && cd       build && CC=gcc CXX=g++                              cmake -DCMAKE_INSTALL_PREFIX=/usr                 -DLLVM_ENABLE_FFI=ON                        -DCMAKE_BUILD_TYPE=Release                  -DLLVM_BUILD_LLVM_DYLIB=ON                  -DLLVM_TARGETS_TO_BUILD="host;AMDGPU"       -Wno-dev ..                           && make
+   76  cd ..
+   77  mkdir -v build && cd       build && CC=gcc CXX=g++                              cmake -DCMAKE_INSTALL_PREFIX=/usr                 -DLLVM_ENABLE_FFI=ON                        -DCMAKE_BUILD_TYPE=Release                  -DLLVM_BUILD_LLVM_DYLIB=ON                  -DLLVM_TARGETS_TO_BUILD="host;AMDGPU"       -Wno-dev ..                           && make
+   78  rm -f build
+   79  rm -rf build
+   80  mkdir -v build && cd       build && CC=gcc CXX=g++                              cmake -DCMAKE_INSTALL_PREFIX=/usr                 -DLLVM_ENABLE_FFI=ON                        -DCMAKE_BUILD_TYPE=Release                  -DLLVM_BUILD_LLVM_DYLIB=ON                  -DLLVM_TARGETS_TO_BUILD="host;AMDGPU"       -Wno-dev ..                           && make
+   81  cd ../..
+   82  rm -rf build/
+   83  mkdir -v build && cd       build && CC=gcc CXX=g++                              cmake -DCMAKE_INSTALL_PREFIX=/usr                 -DLLVM_ENABLE_FFI=ON                        -DCMAKE_BUILD_TYPE=Release                  -DLLVM_BUILD_LLVM_DYLIB=ON                  -DLLVM_TARGETS_TO_BUILD="host;AMDGPU"       -Wno-dev ..                           && make
+   84  cd ..
+   85  ls
+   86  rm -rf build/
+   87  cd ..
+   88  ls
+   89  rm -rf ./*
+   90  ps aux
+   91  sudo nano /var/log/juju/unit-filebeat-4.log 
+   92  sudo chmod a+r /var/log/juju/unit-filebeat-4.log
+   93  ps aux
+   94  sudo chmod a+r /var/log/juju/unit-filebeat-4.log 
+   95  sudo nano /var/log/juju/unit-filebeat-4.log 
+   96  sudo nano /var/log/juju/unit-flannel-4.log 
+   97  juju ssh etcd/0 ip addr show eth0
+   98  sudo grep -nri "172.31.25.132" /etc/*
+   99  sudo grep -nri "172.31.25.132" /var/lib/juju/
+  100  ls /opt/
+  101  cd /var/lib/juju/
+  102  ls
+  103  cd agents/
+  104  ls
+  105  cd unit-flannel-4/
+  106  ls
+  107  nano agent.conf 
+  108  sudo nano agent.conf 
+  109  cd charm/
+  110  ls
+  111  ls templates/
+  112  cat templates/flannel.service 
+  113  sudo find / -name "flannel.service" 
+  114  cd ~
+  115  cd /var/lib/juju/
+  116  ls agents/
+  117  cd ~
+  118  dpkg -l > package-list.txt
+  119  dpkg -l | grep juju
+  120  ls -la /var/lib/juju/
+  121  ls -la /var/lib/juju/agents/
+  122  dpkg | grep juju
+  123  dpkg -l | grep juju
+  124  sudo dpkg -l | grep juju
+  125  sudo cp -r /var/lib/juju/ /var/lib/juju.old
+  126  sudo rm -rf /var/lib/juju
+  127  apt-cache search fan
+  128  apt-cache search fan | grep networking
+  129  apt-cache search fanatic
+  130  apt-cache search ubuntu-fan
+  131  sudo apt install ubuntu-fan
+  132  sudo apt install lxd
+  133  ifconfig
+  134  sudo fanatic
+  135  lxc profile edit default
+  136  cat /etc/lxc/default.conf
+  137  lxc profile edit default
+  138  sudo lxc profile edit default
+  139  ifconfig
+  140  sudo lxc profile edit default
+  141  lxc list
+  142  sudolxc list
+  143  sudo lxc list
+  144  lxc profile list
+  145  sudo lxc profile list
+  146  sudo lxc profile edit fan-250
+  147  sudo lxc profile edit default
+  148  sudo lxc profile edit docker
+  149  sudo lxc list
+  150  sudo nano /etc/network/fan 
+  151  sudo nano /etc/network/interfaces
+  152  sudo nano /etc/network/fan 
+  153  sudo nano /etc/network/interfaces
+  154  sudo nano /etc/network/fan 
+  155  sudo fanctl status
+  156  sudo fanctl show
+  157  lxc exec juju-22d994-0 bash
+  158  sudo lxc exec juju-22d994-0 bash
+  159  exit
+  160  lxc list
+  161  newgrp lxd
+  162  exit
+  163  juju status
+  164  ssh 172.31.248.110
+  165  ssh-keygen -t rsa
+  166  ssh-copy-id bcruser8@172.31.248.110
+  167  juju help add-machine
+  168  juju add-machine ssh:bcruser8@172.31.248.110
+  169  juju status
+  170  juju deploy cs:~containers/easyrsa-1
+  171  juju debug-log
+  172  juju status
+  173  juju remove-application easyrsa
+  174  juju status
+  175  juju add-machine ssh:bcruser8@172.31.248.110
+  176  juju help add-machine
+  177  juju add-machine lxd:0 -n 3
+  178  juju add-machine lxd:0
+  179  juju status
+  180  juju add-machine lxd:1
+  181  juju status
+  182  watch juju status
+  183  ifconfig
+  184  juju add-machine ssh:bcruser8@172.31.248.86
+  185  ssh-copy-id bcruser8@172.31.248.86
+  186  juju add-machine ssh:bcruser8@172.31.248.86
+  187  juju status
+  188  juju kill-controller k8s
+  189  juju status
+  190  lxc status
+  191  exit
+  192  juju bootstrap k8s lxd
+  193  newgrp lxd
+  194  cat /etc/group
+  195  exit
+  196  sudo apt-add-repository -y ppa:juju/devel
+  197  sudo apt update
+  198  sudo rm /etc/apt/sources.list.d/ethereum-ubuntu-ethereum-xenial.list*
+  199  sudo apt update
+  200  sudo nano /etc/apt/sources.list
+  201  sudo apt update
+  202  sudo apt upgrade 
+  203  sudo apt install juju zfsutils-linux
+  204  juju list-clouds
+  205  juju bootstrap k8s lxd
+  206  sudo usermod -aG lxd bcruser8
+  207  newgrp lxd
+  208  exit
+  209  w
+  210  pwd
+  211  dkpg -i tonic_1.19-1_all.deb 
+  212  dpkg -i tonic_1.19-1_all.deb 
+  213  sudo -i
+  214  lxc status
+  215  sudo chown -R bcruser8:bcruser8 ./*
+  216  lxc status
+  217  sudo chown -R bcruser8:bcruser8 ./.*
+  218  lxc status
+  219  lxc launch ubuntu:16.04 juju-controller
+  220  lxc exec juju-controller bash
+  221  lxc profile edit default
+  222  lxc exec juju-controller bash
+  223  lxc config set juju-controller security-nesting=true
+  224  lxc config set juju-controller security-nesting true
+  225  lxc config set juju-controller security.nesting true
+  226  lxc exec juju-controller bash
+  227  sudo su ubuntu
+  228  lxc list
+  229  lxc exec juju-controller bash
+  230  ifconfig
+  231  lxc exec juju-controller bash
+  232  lxc list
+  233  lxc start juju-controller
+  234  ifconfig
+  235  sudo nano /etc/network/interfaces
+  236  sudo fanctl up 250.0.0.0/8 172.31.248.86/16
+  237  sudo nano /etc/network/interfaces
+  238  sudo nano /etc/network/fan 
+  239  sudo fanctl up 250.0.0.0/8 172.31.248.86/16 dhcp
+  240  lxc start juju-controller
+  241  lxc exec juju-controller bash
+  242  lxc profile edit juju-controller
+  243  lxc profile list
+  244  lxc profile edit juju-default
+  245  lxc profile edit default
+  246  lxc profile edit fan-250
+  247  lxc stop juju-controller
+  248  lxc start juju-controller
+  249  lxc exec juju-controller bash
+  250  lxc profile list
+  251  lxc profile edit default
+  252  lxc profile edit juju-controller
+  253  lxc exec juju-controller bash
+  254  lxc profile edit fan-250
+  255  lxc profile docker
+  256  lxc help
+  257  lxc help info
+  258  lxc info juju-controller
+  259  lxc help
+  260  lxc help config
+  261  lxc config device list juju-controller
+  262  ifconfig
+  263  sudo ifdown lxdbr0
+  264  sudo nano /etc/network/interfaces
+  265  sudo lxd init
+  266  lxc profile list juju-controller
+  267  lxc profile edit juju-controller
+  268  sudo service lxd-bridge stop && sudo service lxd restart
+  269  lxc list
+  270  lxc profile device list default
+  271  lxc profile device get parent default
+  272  lxc profile device get default parent
+  273  lxc profile device get default 
+  274  lxc profile device get nic
+  275  lxc list
+  276  lxc stop easyrsa etcd juju-controller
+  277  lxc delete easyrsa etcd juju-controller
+  278  sudo dpkg-reconfigure -p medium lxd
+  279  ifconfig
+  280  lxc profile list
+  281  lxc profile edit default
+  282  lxc launch ubuntu:16.04 juju-controller
+  283  lxc config set juju-controller security.nesting true
+  284  lxc exec juju-controller bash
+  285  lxc profile edit default
+  286  sudo service lxd-bridge start && sudo service lxd restart
+  287  lxc exec juju-controller bash
+  288  dhclient eth0
+  289  lxc exec juju-controller bash
+  290  lxc list
+  291  lxc stop juju-controller && lxc delete juju-controller
+  292  lxc start juju-controller
+  293  lxc launch ubuntu:16.04 juju-controller
+  294  ifconfig
+  295  sudo service lxd-bridge start
+  296  ifconfig
+  297  lxc list
+  298  lxc delete juju-controller
+  299  sudo dpkg-reconfigure -p medium lxd
+  300  ifconfig
+  301  lxc launch ubuntu:16.04 juju-controller
+  302  lxc exec juju-controller bash
+  303  lxc config set juju-controller security.nesting true
+  304  lxc exec juju-controller bash
+  305  lxc config set juju-controller security.nesting true
+  306  lxc exec juju-controller bash
+  307  lxc profile list
+  308  lxc profile edit default
+  309  ifconfig
+  310  ifconfig | grep Link
+  311  lxc profile edit default
+  312  nano /etc/default/lxd-bridge 
+  313  juju status
+  314  sudo dpkg-reconfigure -p medium lxd
+  315  ifconfig
+  316  lxc list
+  317  nano /etc/default/lxd-bridge 
+  318  lxc profile device set default eth0 parent eth0
+  319  lxc stop juju-controller && lxd delete juju-controller
+  320  lxc stop juju-controller && lxc delete juju-controller
+  321  lxc list
+  322  lxc delete juju-controller
+  323  lxc profile device set default eth0 parent eth0
+  324  lxc profile show default
+  325  lxc launch ubuntu:16.04 juju-controller
+  326  lxc info --show-log juju-controller
+  327  lxc profile device set default eth0 nictype macvlan
+  328  lxc launch ubuntu:16.04 juju-controller
+  329  lxc exec juju-controller bash
+  330  lxc delete juju-controller 
+  331  lxc launch ubuntu:16.04 juju-controller
+  332  lxc list
+  333  lxc exec juju-controller bash
+  334  lxc stop juju-controller && lxc start juju-controller
+  335  lxc list
+  336  lxc exec juju-controller bash
+  337  lxc profile edit default
+  338  lxc exec juju-controller bash
+  339  ls
+  340  lxc file push kubernetes-master-v1.3.8-ppc64le.tar.gz juju-controller/root/
+  341  lxc exec juju-controller bash
+  342  lxc file push kubernetes-worker-v1.3.8-ppc64le.tar.gz juju-controller/root/
+  343  lxc exec juju-controller bash
+  344  lxc file pull /root/flannel.tar.gz ./
+  345  lxc file pull juju-controller/root/flannel.tar.gz ./
+  346  ls
+  347  ls -la
+  348  lxc exec juju-controller bash
+  349  ps aux | grep juju
+  350  lxc launch ubuntu:16.04 easyrsa
+  351  lxc launch ubuntu:16.04 etcd
+  352  ps aux
+  353  ping 8.8.8.8
+  354  lxc exec juju-controller bash
+  355  grep -nri "url_effective" /var/log/*
+  356  sudo grep -nri "url_effective" /var/log/*
+  357  sudo grep -nri "url_effective" /var/lib/juju/*
+  358  ifconfig
+  359  ifconfig fan-250
+  360  ps aux
+  361  ps aux | grep [c]url 
+  362  lxc profile edit juju-default
+  363  ifconfig
+  364  ifconfig fan-250
+  365  lxc list
+  366  lxc exec juju-controller bash
+  367  ifconfig
+  368  ifconfig eth*
+  369  ifconfig eth11
+  370  ifconfig eth12
+  371  ifconfig eth13
+  372  ifconfig eth14
+  373  lxc list
+  374  lxc exec juju-controller bash
+  375  lxc list
+  376  lxc profile exit default
+  377  lxc profile edit default
+  378  lxc list
+  379  ifconfig
+  380  ifconfig fan-250
+  381  cat /etc/network/fan 
+  382  ping 250.248.110.32
+  383  ifcofnig 
+  384  ifconfig
+  385  ifconfig eth11
+  386  ifconfig eth12
+  387  ifconfig eth13
+  388  sudo apt update && sudo apt install nmap
+  389  nmap 172.31.248.64/26 -sP
+  390  route
+  391  ifconfig eth13
+  392  ping 172.31.248.126
+  393  route
+  394  ifconfig eth13
+  395  ifconfig fan-250
+  396  lxc profile set juju-controller security.nesting true
+  397  lxc list
+  398  ping 250.248.126.1
+  399  lxc profile edit default
+  400  lxc profile set juju-controller security.nesting true
+  401  lxc profile show juju-controller
+  402  lxc config set juju-controller security.nesting true
+  403  lxc list
+  404  lxc exec juju-controller bash
+  405  exit
+  406  curl -O https://storage.googleapis.com/kubernetes-release/release/v1.3.8/bin/linux/ppc64le/kubectl ./
+  407  curl -O https://storage.googleapis.com/kubernetes-release/release/v1.3.8/bin/linux/ppc64le/kubectl
+  408  ls -la
+  409  chmod +x kubectl 
+  410  lxc file pull juju-controller/root/kubeconfig ./
+  411  ./kubectl --kubeconfig=./kubeconfig get nodes
+  412  nano kubeconfig 
+  413  ./kubectl --kubeconfig=./kubeconfig get nodes
+  414  lxc exec juju-controller bash
+  415  nano kubeconfig 
+  416  ./kubectl --kubeconfig=./kubeconfig get nodes
+  417  ./kubectl --kubeconfig=./kubeconfig get pods --all-namespaces
+  418  nano kubeconfig 
+  419  curl 250.248.110.50:443
+  420  curl -k https://250.248.110.50:443
+  421  curl -k https://250.248.110.50:443/api/v1/nodes
+  422  lxc exec juju-controller bash
+  423  lxc stop juju-controller
+  424  lxc list
+  425  lxc profile list
+  426  lxc profile edit default
+  427  lxc profile edit fan250
+  428  lxc profile edit fan-250
+  429  ifcofnig
+  430  ifconfig
+  431  exit
+  432  lxc profile edit default
+  433  ifconfig
+  434  route
+  435  sudo apt remove juju --purge
+  436  sudo apt autoremove --purge
+  437  ps aux
+  438  lxc list
+  439  ifconfig fan-250
+  440  sudo nvidia-smi
+  441  tail -f /var/log/juju/unit-kubernetes-master-0.log 
+  442  sudo tail -f /var/log/juju/unit-kubernetes-master-0.log 
+  443  sudo nano /var/log/juju/unit-kubernetes-master-0.log 
+  444  lxc list
+  445  lxc info juju-3e9266-0-lxd-0
+  446  lxc profile edit default
+  447  lxc stop juju-3e9266-0-lxd-0 && lxc start juju-3e9266-0-lxd-0
+  448  lxc list
+  449  lxc info juju-3e9266-0-lxd-0
+  450  lxc profile show default
+  451  lxc exec juju-3e9266-0-lxd-0 bash
+  452  lxc profile list
+  453  list profile show juju-default
+  454  lxc profile show juju-default
+  455  lxc info juju-3e9266-0-lxd-0
+  456  lxc stop juju-3e9266-0-lxd-0
+  457  lxc profile apply juju-3e9266-0-lxd-0 default
+  458  lxc start juju-3e9266-0-lxd-0
+  459  lxc list
+  460  ifconfig
+  461  lxc profile edit default
+  462  lxc restart juju-3e9266-0-lxd-0
+  463  lxc list
+  464  lxc profile edit default
+  465  lxc profile edit fan-250
+  466  lxc profile apply juju-3e9266-0-lxd-0 fan-250
+  467  lxc restart juju-3e9266-0-lxd-0
+  468  lxc list
+  469  lxc exec juju-3e9266-0-lxd-0 bash
+  470  lxc profile apply juju-3e9266-0-lxd-0 default
+  471  fanctl show
+  472  lxc profile list
+  473  lxc profile show docker
+  474  lxc profile show default
+  475  lxc profile show juju-controller
+  476  lxc profile show juju-default
+  477  lxc list
+  478  lxc stop juju-3e9266-0-lxd-0
+  479  lxc list
+  480  lxc start juju-3e9266-0-lxd-0
+  481  lxc list
+  482  lxc launch ubuntu:16.04 test
+  483  lxc list
+  484  lxc stop test && lxc delete test
+  485  lxc list
+  486  watch lxc list
+  487  lxc launch ubuntu:16.04 easyrsa
+  488  lxc exec easyrsa bash
+  489  lxc list
+  490  lxc exec easyrsa bash
+  491  ps aux
+  492  lxc list
+  493  lxc profile set default security.nesting true
+  494  lxc exec easyrsa bash
+  495  watch lxc list
+  496  lxc profile list
+  497  watch lxc list
+  498  lxc list
+  499  juju profile show juju-3e9266-0-lxd-2
+  500  juju info juju-3e9266-0-lxd-2
+  501  lxc info juju-3e9266-0-lxd-2
+  502  lxc info easyrsa
+  503  lxc profile show juju-default
+  504  lxc profile show default
+  505  juju config profile default boot.autostart true
+  506  lxc config profile default boot.autostart true
+  507  lxc profile set default boot.autostart true
+  508  lxc profile edit juju-controller 
+  509  lxc profile edit juju-default
+  510  watch lxc list
+  511  ifconfig
+  512  brctl list
+  513  brctl 
+  514  brctl show
+  515  lxc list
+  516  lxc info devices:
+  517  lxc info juju-3e9266-0-lxd-3
+  518  lxc config device remove juju-3e9266-0-lxd-3 eth0
+  519  lxc config device add juju-3e9266-0-lxd-3 nic nictype=bridged parent=fan-250 name=eth0 mtu="1450"
+  520  lxc config device add juju-3e9266-0-lxd-3 eth0 nic nictype=bridged parent=fan-250 name=eth0 mtu="1450"
+  521  lxc list
+  522  lxc info juju-3e9266-0-lxd-3
+  523  lxc exec juju-3e9266-0-lxd-3 bash
+  524  lxc list
+  525  lxc exec juju-3e9266-0-lxd-3 bash
+  526  ps aux | grep juju
+  527  brctl show
+  528  brctl help
+  529  brctl stp lxdbr0 off
+  530  sudo brctl stp lxdbr0 off
+  531  sudo service lxd-bridge stop
+  532  brctl show
+  533  watch lxc list
+  534  sudo cat /var/log/lxd/juju-3e9266-0-lxd-4/lxc.conf
+  535  sudo nano /var/log/lxd/juju-3e9266-0-lxd-4/lxc.conf
+  536  lxc list
+  537  lxc restart juju-3e9266-0-lxd-4
+  538  lxc list
+  539  sudo nano /etc/default/lxd-bridge 
+  540  sudo service lxd-bridge status
+  541  sudo service lxd-bridge stop
+  542  sudo service lxd-bridge start
+  543  sudo service lxd-bridge status
+  544  ifconfig
+  545  brctl show
+  546  sudo brctl delbr lxdbr0
+  547  brctl
+  548  lxc list
+  549  sudo nano /var/log/lxd/juju-3e9266-0-lxd-4/lxc.conf
+  550  lxc stop juju-3e9266-0-lxd-4 && lxc delete juju-3e9266-0-lxd-4
+  551  ifconfig
+  552  sudo fanctl 
+  553  sudo fanctl show
+  554  sudo fanctl up fan-250
+  555  sudo fanctl up -a
+  556  sudo fanctl down -a
+  557  sudo fanctl up -a
+  558  ifconifg
+  559  ifconfig
+  560  sudo nano /etc/default/lxd-bridge 
+  561  sudo service lxd-bridge restart
+  562  sudo fanctl down -a
+  563  sudo fanctl up -a
+  564  ifconfig
+  565  sudo fanctl show
+  566  sudo fanctl
+  567  sudo fanctl help up
+  568  sudo fanctl help down
+  569  sudo fanctl down -u 172.31.248.86/16 -o 250.0.0.0/8
+  570  sudo fanctl up -a
+  571  ifconfig
+  572  sudo brctl show
+  573  sudo brctl delbr lxdbr0
+  574  sudo brctl stop lxdbr0
+  575  sudo service lxd-bridge stop
+  576  sudo brctl delbr lxdbr0
+  577  sudo find /  -name fanatic
+  578  sudo find /  -name fanatic 2>/dev/null
+  579  cat /usr/sbin/fanatic
+  580  sudo reboot now
+  581  ifconfig
+  582  sudo nano /etc/default/lxd-bridge 
+  583  sudo nano /etc/default/lxd-bridge
+  584  ps aux
+  585  ps aux | grep nano
+  586  ps aux | grep lxd-bridge
+  587  cat /usr/sbin/fanatic
+  588  sudo fanatic enable-lxd
+  589  watch lxc list
+  590  lxc list
+  591  lxc info juju-3e9266-0-lxd-5
+  592  sudo nano /etc/default/lxd-bridge
+  593  sudo nano /var/log/juju/unit-kubernetes-master-0.log 
+  594  kubectl status
+  595  kubectl get nodes
+  596  ls -la
+  597  kubectl --kubeconfig=./kubeconfig get nodes
+  598  ifconfig
+  599  sudo mv kubeconfig kubeconfig.old
+  600  cd /var/lib/juju/agents/unit-kubernetes-master-0/
+  601  sudo nano charm/reactive/kubernetes_master.py 
+  602  sudo ls -la /srv/kubernetes/
+  603  sudo cat  /srv/kubernetes/basic_auth.csv
+  604  sudo cat  /srv/kubernetes/known_tokens.csv
+  605  sudo nano charm/reactive/kubernetes_master.py 
+  606  sudo nano /var/log/juju/unit-kubernetes-master-0.log 
+  607  sudo nano charm/reactive/tls_client.py 
+  608  sudo su
+  609  env
+  610  sudo su ubuntu
+  611  ps aux
+  612  sudo ls -la /etc/systemd/system
+  613  ps aux | grep juju
+  614  sudo ls -laR /etc/systemd/system
+  615  cat /var/lib/juju/init/jujud-unit-kubernetes-master-0/jujud-unit-kubernetes-master-0.service
+  616  sudo systemctl help
+  617  sudo systemctl --help
+  618  sudo systemctl list-unit-files
+  619  sudo nano charm/reactive/kubernetes_master.py 
+  620  sudo cat /srv/kubernetes/known_tokens.csv
+  621  sudo cat /srv/kubernetes/known_tokens.csv ; echo "";
+  622  sudo nano charm/reactive/kubernetes_master.py 
+  623  sudo ls -la /etc/kubernetes/
+  624  sudo mv /etc/kubernetes/serviceaccount.key /etc/kubernetes/serviceaccount.key.old
+  625  sudo ls -la /etc/kubernetes/
+  626  sudo ls -la /etc/kubernetes/addons/
+  627  sudo ls -la /etc/kubernetes/
+  628  sudo ls -la /srv/kubernetes/
+  629  sudo mv /srv/kubernetes/basic_auth.csv /srv/kubernetes/basic_auth.csv.old
+  630  sudo mv /srv/kubernetes/known_tokens.csv /srv/kubernetes/known_tokens.csv.old
+  631  sudo ls -la /srv/kubernetes/
+  632  sudo ls -la /etc/kubernetes/
+  633  sudo ls -la /srv/kubernetes/
+  634  ps aux | grep easy
+  635  lxc list
+  636  lxc start easyrsa
+  637  lxc profile edit default
+  638  lxc start easyrsa
+  639  lxc list
+  640  watch lxc list
+  641  lxc list
+  642  lxc launch ubuntu:16.04 easyrsa-2
+  643  sudo mv /srv/kubernetes/known_tokens.csv.old /srv/kubernetes/known_tokens.csv
+  644  sudo mv /srv/kubernetes/basic_auth.csv.old /srv/kubernetes/basic_auth.csv
+  645  sudo mv /etc/kubernetes/serviceaccount.key.old /etc/kubernetes/serviceaccount.key
+  646  lxc list
+  647  lsx stop easyrsa easyrsa-2
+  648  lxc stop easyrsa easyrsa-2
+  649  lxc delete easyrsa easyrsa-2
+  650  sudo nano charm/reactive/tls_client.py 
+  651  ls -la /etc/ssl/certs/
+  652  sudo find / -name "easyrsa*" 2>/dev/null
+  653  sudo rm /etc/ssl/certs/e9112285.1 /etc/ssl/certs/easyrsa.pem
+  654  sudo mv /etc/ssl/certs/kubernetes-master.pem /etc/ssl/certs/kubernetes-master.pem.old
+  655  ls -la /etc/ssl/certs/
+  656  sudo cat /etc/ssl/certs/ca-certificates.crt
+  657  ls -la /etc/ssl/certs/
+  658  sudo mv /etc/ssl/certs/etcd.pem /etc/ssl/certs/etcd.pem.old
+  659  sudo mv /etc/ssl/certs/e9112285.0 /etc/ssl/certs/e9112285.0.old
+  660  ls -la /etc/ssl/certs/
+  661  sudo find / -name "easyrsa*" 2>/dev/null
+  662  sudo mv /usr/local/share/ca-certificates/easyrsa.crt
+  663  sudo mv /usr/local/share/ca-certificates/easyrsa.crt /usr/local/share/ca-certificates/easyrsa.crt
+  664  sudo mv /usr/local/share/ca-certificates/easyrsa.crt /usr/local/share/ca-certificates/easyrsa.crt.old
+  665  ls -la /etc/ssl/certs/
+  666  sudo find / -name "easyrsa*" 2>/dev/null
+  667  sudo cat /var/lib/juju/agents/unit-kubernetes-master-0/state/relations/15/easyrsa-7
+  668  sudo mv /usr/local/share/ca-certificates/easyrsa.crt.old /usr/local/share/ca-certificates/easyrsa.crt
+  669  history | grep mv
+  670  sudo mv /etc/ssl/certs/e9112285.0.old /etc/ssl/certs/e9112285.0
+  671  sudo mv /etc/ssl/certs/etcd.pem.old /etc/ssl/certs/etcd.pem
+  672  sudo mv /etc/ssl/certs/kubernetes-master.pem.old /etc/ssl/certs/kubernetes-master.pem
+  673  ping 250.248.79.170
+  674  ls -la
+  675  cd charm/
+  676  ls -la
+  677  cd ..
+  678  find . -name "easy*" 
+  679  cat ./state/relations/15/easyrsa-7
+  680  md5sum /usr/local/share/ca-certificates/easyrsa.crt
+  681  sudo md5sum /usr/local/share/ca-certificates/easyrsa.crt
+  682  sudo find / -name "easy*" 2>/dev/null
+  683  ls -la /usr/local/share/ca-certificates/easyrsa.crt
+  684  sudo ls -la /usr/local/share/ca-certificates/easyrsa.crt
+  685  sudo mv /usr/local/share/ca-certificates/easyrsa.crt /usr/local/share/ca-certificates/easyrsa.crt.old
+  686  sudo mv /home/ubuntu/easyrsa.crt /usr/local/share/ca-certificates/easyrsa.crt
+  687  exit
+  688  lxc list
+  689  exit
+  690  sudo journalctl -u flannel
+  691  sudo nano /var/log/juju/unit-flannel-0.log 
+  692  flannel version
+  693  flanneld version
+  694  sudo tail -f /var/log/juju/unit-flannel-0.log 
+  695  ifconfig
+  696  sudo systemctl status flannel
+  697  sudo systemctl start flannel
+  698  sudo systemctl status flannel
+  699  ls -la
+  700  sudo ls -la /home/ubuntu
+  701  sudo cp /home/ubuntu/config ./
+  702  sudo chmod a+r ./config 
+  703  kubectl --kubeconfig=./config get nodes
+  704  sudo mv /usr/local/share/ca-certificates/easyrsa.crt.old /usr/local/share/ca-certificates/easyrsa-2.crt
+  705  kubectl --kubeconfig=./config get nodes
+  706  cat config
+  707  ls -la /etc/ssl/certs/
+  708  cat config 
+  709  nano config 
+  710  sudo nano config 
+  711  kubectl --kubeconfig=./config get nodes
+  712  ls -la /srv/kubernetes/
+  713  sudp ls -la /srv/kubernetes/
+  714  sudo ls -la /srv/kubernetes/
+  715  sudo cat /srv/kubernetes/ca.crt | base64 --wrap=0
+  716  sudo nano config 
+  717  kubectl --kubeconfig=./config get nodes
+  718  sudo cat /srv/kubernetes/client.crt | base64 --wrap=0
+  719  sudo nano config 
+  720  sudo cat /srv/kubernetes/client.key | base64 --wrap=0
+  721  sudo nano config 
+  722  kubectl --kubeconfig=./config get nodes
+  723  sudo md5sum /srv/kubernetes/ca.crt
+  724  sudo md5sum /srv/kubernetes/client.crt
+  725  sudo md5sum /srv/kubernetes/client.key
+  726  kubectl --kubeconfig=./config get nodes
+  727  sudo systemctl status kubelet
+  728  sudo systemctl status kube-apiserver.service 
+  729  sudo nano /etc/systemd/system/kube
+  730  sudo nano /etc/systemd/system/kube-apiserver.service
+  731  sudo ls -laR /etc/systemd/system
+  732  sudo nano /lib/systemd/system/kube-apiserver.service
+  733  sudo nano /etc/default/kube-defaults 
+  734  sudo nano /etc/default/kube-apiserver 
+  735  sudo systemctl restart kube-apiserver 
+  736  sudo systemctl status kube-apiserver.service 
+  737  kubectl --kubeconfig=./config get nodes
+  738  sudo systemctl status kube-scheduler
+  739  wget http://127.0.0.1:8080/api/v1/watch/replicationcontrollers
+  740  curl http://127.0.0.1:8080/api/v1/
+  741  curl http://127.0.0.1:8080/api/v1/nodes
+  742  sudo ls -laR /etc/systemd/system
+  743  sudo nano /etc/default/kube-controller-manager 
+  744  sudo systemctl restart kube-controller-manager
+  745  sudo systemctl status kube-controller-manager
+  746  sudo systemctl status kube-scheduler
+  747  sudo nano /etc/default/kube-scheduler 
+  748  curl http://127.0.0.1:8080/api/v1/nodes
+  749  curl http://127.0.0.1:8080/api/v1/pods
+  750  kubectl --kubeconfig=./config get pods --all-namespaces
+  751  kubectl --kubeconfig=./config run redis
+  752  kubectl --kubeconfig=./config run redis --image=redis:latest
+  753  kubectl --kubeconfig=./config get pods --all-namespaces
+  754  kubectl --kubeconfig=./config get pods --all-namespaces -o wide
+  755  sudo systemctl status kube-scheduler
+  756  kubectl --kubeconfig=./config delete deployment redis
+  757  sudo systemctl status kube-scheduler
+  758  kubectl --kubeconfig=./config get pods --all-namespaces -o wide
+  759  sudo systemctl status kube-apiserver.service 
+  760  sudo cat config
+  761  sudo systemctl status kube-apiserver.service 
+  762  sudo journalctl -u kube-apiserver -f 
+  763  kubectl --kubeconfig=./config get pods --all-namespaces -o wide
+  764  kubectl --kubeconfig=./config get nodes
+  765  sudo cat config
+  766  kubectl --kubeconfig=./config get nodes
+  767  kubectl --kubeconfig=./config get nodes
+  768  sudo journalctl -u kube-apiserver -f 
+  769  sudo journalctl -u kube-scheduler -f 
+  770  ls -la /etc/default/
+  771  sudo systemctl status kube-controller-manager
+  772  sudo journalctl -u kube-controller-manager -f
+  773  sudo systemctl restart kube-controller-manager
+  774  sudo journalctl -u kube-controller-manager -f
+  775  sudo systemctl restart flannel
+  776  sudo journalctl -u kube-controller-manager -f
+  777  cd /var/lib/juju/agents/unit-kubernetes-master-0/
+  778  sudo nano charm/reactive/kubernetes_master.py 
+  779  sudo ls -la /etc/kubernetes/addons/
+  780  sudo find . -name "kube-dns*" 
+  781  sudo ls -la /etc/kubernetes/addons/
+  782  sudo nano charm/reactive/kubernetes_master.py 
+  783  sudo find . -name "kubedns-rc.yaml" 
+  784  sudo cp ./charm/templates/kubedns-rc.yaml /etc/kubernetes/addons/
+  785  sudo nano /etc/kubernetes/addons/kubedns-rc.yaml 
+  786  kubectl --kubeconfig=./config create -f /etc/kubernetes/addons/kubedns-rc.yaml
+  787  cd ~
+  788  kubectl --kubeconfig=./config create -f /etc/kubernetes/addons/kubedns-rc.yaml
+  789  kubectl --kubeconfig=./config get pods --all-namespaces -o wide
+  790  sudo cp /var/lib/juju/agents/unit-kubernetes-master-0/charm/templates/kubedns-svc.yaml /etc/kubernetes/addons/
+  791  sudo nano /etc/kubernetes/addons/kubedns-svc.yaml 
+  792  sudo nano  /var/lib/juju/agents/unit-kubernetes-master-0/charm/reactive/kubernetes_master.py 
+  793  ls -la /var/lib/juju/agents/unit-kubernetes-master-0/charm/files/
+  794  sudo ls -la /etc/systemd/system/multi-user.target.wants/
+  795  sudo nano  /var/lib/juju/agents/unit-kubernetes-master-0/charm/reactive/kubernetes_master.py 
+  796  kubectl --kubeconfig=./config get rc
+  797  kubectl --kubeconfig=./config get rc --all-namespaces
+  798  kubectl --kubeconfig=./config delete rc --namespace kube-system kube-dns-v19
+  799  sudo ls -la /srv/kubernetes/
+  800  kubectl --kubeconfig=./config get r --all-namespaces
+  801  kubectl --kubeconfig=./config get  --all-namespaces
+  802  kubectl --kubeconfig=./config get po --all-namespaces
+  803  kubectl --kubeconfig=./config get deploymnets --all-namespaces
+  804  kubectl --kubeconfig=./config get deployments --all-namespaces
+  805  kubectl --kubeconfig=./config get po --all-namespaces
+  806  sudo cat /etc/kubernetes/addons/kubedns-rc.yaml 
+  807  sudo cat /etc/kubernetes/addons/kubedns-svc.yaml 
+  808  kubectl --kubeconfig=./config get svc --all-namespaces
+  809  kubectl --kubeconfig=./config get nodes
+  810  kubectl --kubeconfig=./config get pods -o wide
+  811  kubectl --kubeconfig=./config get pods -o wide --all-namespaces
+  812  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-cppsz
+  813  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-cppsz kubedns
+  814  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-cppsz dnsmasq
+  815  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-cppsz healthz
+  816  sudo nano /etc/hosts
+  817  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-cppsz healthz
+  818  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-cppsz dnsmasq
+  819  kubectl --kubeconfig=./config describe pod --namespace kube-system kube-dns-v19-cppsz dnsmasq
+  820  kubectl --kubeconfig=./config describe pod --namespace kube-system kube-dns-v19-cppsz 
+  821  docker pull gcr.io/google_containers/kubedns-ppc64el:1.7
+  822  sudo docker pull gcr.io/google_containers/kubedns-ppc64el:1.7
+  823  sudo docker help
+  824  sudo docker pull gcr.io/google_containers/kubedns-ppc64el:dns
+  825  sudo docker pull gcr.io/google_containers/kubedns-ppc64el:latest
+  826  sudo docker search gcr.io/google_containers/kubedns-ppc64el
+  827  sudo docker search gcr.io/google_containers/kubedns-
+  828  sudo docker search gcr.io/google_containers/kubedns-ppc64le
+  829  sudo sed -i s/ppc64el/ppc64le/g /etc/kubernetes/addons/kubedns-*.yaml
+  830  kubectl --kubeconfig=./config replace -f /etc/kubernetes/addons/kubedns-rc.yaml 
+  831  kubectl --kubeconfig=./config get pods -o wide --all-namespaces
+  832  kubectl --kubeconfig=./config describe pod --namespace kube-system kube-dns-v19-cppsz 
+  833  kubectl --kubeconfig=./config describe rc --namespace kube-system kube-dns
+  834  kubectl --kubeconfig=./config get pods -o wide --all-namespaces
+  835  kubectl --kubeconfig=./config delete pod --namespace kubesystem kube-dns-v19-cppsz
+  836  kubectl --kubeconfig=./config delete pod --namespace kube-system kube-dns-v19-cppsz
+  837  kubectl --kubeconfig=./config get pods -o wide --all-namespaces
+  838  kubectl --kubeconfig=./config describe pod --namespace kube-system kube-dns-v19-0ule0
+  839  kubectl --kubeconfig=./config get pods -o wide --all-namespaces
+  840  sudo nano /etc/kubernetes/addons/dashboard.yaml 
+  841  kubectl --kubeconfig=./config replace -f /etc/kubernetes/addons/dashboard.yaml 
+  842  sudo nano /etc/kubernetes/addons/dashboard.yaml 
+  843  kubectl --kubeconfig=./config get deployments
+  844  kubectl --kubeconfig=./config get deployments --all-namespaces
+  845  kubectl --kubeconfig=./config delete deployment kubernetes-dashboard --namespace kube-system
+  846  kubectl --kubeconfig=./config create -f /etc/kubernetes/addons/dashboard.yaml 
+  847  cat /etc/kubernetes/addons/kubedns-rc.yaml 
+  848  arch
+  849  sudo docker search gcr.io/google_containers/kubedns-
+  850  arch
+  851  uname -a
+  852  kubectl --kubeconfig=./config get pods -o wide --all-namespaces
+  853  cat /etc/kubernetes/addons/default-http-backend.yaml 
+  854  sudo docker search gcr.io/google_containers/defaultbackend
+  855  sudo nano  /etc/kubernetes/addons/default-http-backend.yaml 
+  856  kubectl --kubeconfig=./config replace -f /etc/kubernetes/addons/default-http-backend.yaml 
+  857  kubectl --kubeconfig=./config get rc 
+  858  kubectl --kubeconfig=./config delete rc default-http-backend nginx-ingress-controller 
+  859  kubectl --kubeconfig=./config create -f /etc/kubernetes/addons/default-http-backend.yaml 
+  860  sudo nano  /etc/kubernetes/addons/ingress-replication-controller.yaml 
+  861  sudo docker search gcr.io/google_containers/nginx-ingress-controller
+  862  sudo nano  /etc/kubernetes/addons/default-http-backend.yaml 
+  863  sudo docker search gcr.io/google_containers/defaultbackend
+  864  sudo docker search gcr.io/google_containers/defaultbackend-ppc64le
+  865  sudo docker help
+  866  sudo docker help search
+  867  sudo docker inspect gcr.io/google_containers/defaultbackend-ppc64le
+  868  sudo docker images gcr.io/google_containers/defaultbackend-ppc64le
+  869  sudo docker images gcr.io/google_containers
+  870  sudo docker pull gcr.io/google_containers/defaultbackend-ppc64le
+  871  curl https://gcr.io/google_containers//v1/repositories/defaultbackend-ppc64le
+  872  curl https://gcr.io/v1/repositories/google_containers/defaultbackend-ppc64le
+  873  curl https://gcr.io/v1/repositories/google_containers/
+  874  curl https://gcr.io/v1/repositories/
+  875  curl https://gcr.io/v1/repositories/google_containers/
+  876  curl https://gcr.io/v1/repositories/defaultbackend-ppc64le
+  877  curl https://gcr.io/v1/repositories/google_containers/defaultbackend-ppc64le/tags
+  878  curl https://gcr.io/v1/repositories/google_containers/defaultbackend-ppc64le/
+  879  sudo docker pull gcr.io/google_containers/defaultbackend-ppc64le:0.7.0
+  880  kubectl --kubeconfig=./config delete rc default-http-backend nginx-ingress-controller 
+  881  kubectl --kubeconfig=./config delete svc default-http-backend nginx-ingress-controller 
+  882  kubectl --kubeconfig=./config get svc
+  883  kubectl --kubeconfig=./config get svc --all-namespaces
+  884  kubectl --kubeconfig=./config get pods --all-namespaces
+  885  sudo docker search gcr.io/google_containers/
+  886  sudo docker search gcr.io/google_containers/ppc64
+  887  sudo docker search ppc64
+  888  kubectl --kubeconfig=./config get pods --all-namespaces
+  889  kubectl --kubeconfig=./config get pods --all-namespaces -o wide
+  890  kubectl --kubeconfig=./config describe pod --namespace kube-system kube-dns-v19-0ule0
+  891  kubectl --kubeconfig=./config describe pod --namespace kube-system kube-dns-v19-0ule0 dnsmasq
+  892  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-0ule0 
+  893  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-0ule0 healthz
+  894  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-0ule0 kubedns
+  895  kubectl --kubeconfig=./config get pods --all-namespaces -o wide
+  896  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-0ule0 kubedns -f
+  897  kubectl --kubeconfig=./config get pods --all-namespaces -o wide
+  898  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-0ule0 kubedns -f
+  899  kubectl --kubeconfig=./config get svc --namespace kube-system 
+  900  kubectl --kubeconfig=./config describe svc --namespace kube-system kube-dns
+  901  kubectl --kubeconfig=./config get pods --all-namespaces -o wide --labels
+  902  kubectl --kubeconfig=./config get pods --all-namespaces -o wide --show-labels
+  903  nano /etc/kubernetes/addons/kubedns-svc.yaml 
+  904  sudo nano /etc/kubernetes/addons/kubedns-rc.yaml 
+  905  kubectl --kubeconfig=./config --namespace kube-system replace -f /etc/kubernetes/addons/kubedns-rc.yaml 
+  906  kubectl --kubeconfig=./config get pods --all-namespaces -o wide --show-labels
+  907  kubectl --kubeconfig=./config describe pod --namespace kube-system kube-dns-v19-0ule0 dnsmasq
+  908  kubectl --kubeconfig=./config get pods --all-namespaces -o wide --show-labels
+  909  kubectl --kubeconfig=./config describe rc --namespace kube-system kube-dns
+  910  kubectl --kubeconfig=./config deletre pod --namespace kube-system kube-dns-v19-0ule0
+  911  kubectl --kubeconfig=./config delete pod --namespace kube-system kube-dns-v19-0ule0
+  912  kubectl --kubeconfig=./config get pods --all-namespaces -o wide --show-labels
+  913  kubectl --kubeconfig=./config logs --namespace kube-system kube-dns-v19-csrw0 kubedns -f
+  914  kubectl --kubeconfig=./config get pods --all-namespaces -o wide --show-labels
+  915  cat /etc/hosts
+  916  ifconfig fan-250
+  917  kubectl --kubeconfig=./config get pods --all-namespaces -o wide --show-labels
+  918  alias kubectl="kubectl --kubeconfig=$HOME/config"
+  919  nano .bashrc
+  920  history
+  921  sudo find / -type d rootfs
+  922  sudo find / -type d -name rootfs
+  923  wget https://developer.nvidia.com/compute/cuda/8.0/prod/local_installers/cuda-repo-ubuntu1604-8-0-local_8.0.44-1_ppc64el-deb
+  924  sudo dpkg -i cuda-repo-ubuntu1604-8-0-local_8.0.44-1_ppc64el-deb
+  925  sudo apt update
+  926  sudo apt list --upgradable
+  927  sudo apt install --no-install-recommends -y --force-yes cuda gpu-deployment-kit
+  928  sudo apt-search deployment
+  929  sudo apt-cache search deployment
+  930  sudo apt install --no-install-recommends -y --force-yes cuda
+  931  history | grep cuda
+  932  history 
+  933  ifconfig
+  934  docker ps
+  935  sudo usermod -aG docker bcruser8
+  936  exit
+  937  cd docker/ibm/
+  938  ls -la ..
+  939  cd ib
+  940  ls -la
+  941  docker build --rm -f Dockerfile.base-nvidia -t samnco/nvidia-docker-ppc64le:16.04 .
+  942  nano Dockerfile.base-nvidia 
+  943  apt-cache search cuda
+  944  nano Dockerfile.base-nvidia 
+  945  docker build --rm -f Dockerfile.base-nvidia -t samnco/nvidia-docker-ppc64le:16.04 .
+  946  nano Dockerfile.base-nvidia 
+  947  docker build --rm -f Dockerfile.base-nvidia -t samnco/nvidia-docker-ppc64le:16.04 .
+  948  nano Dockerfile.base-nvidia 
+  949  docker build --rm -f Dockerfile.base-nvidia -t samnco/nvidia-docker-ppc64le:16.04 .
+  950  docker push samnco/nvidia-docker-ppc64le:16.04
+  951  docker login
+  952  docker push samnco/nvidia-docker-ppc64le:16.04
+  953  nano Dockerfile
+  954  docker build --rm -f Dockerfile -t samnco/torch-ppc64le .
+  955  echo "deb http://ppa.launchpad.net/ibmpackages/mldl/ubuntu trusty main" | sudo tee /etc/apt/sources.list.d/test.list
+  956  sudo apt update
+  957  nano Dockerfile
+  958  sudo rm -f /etc/apt/sources.list.d/test.list 
+  959  sudo tail -f /var/log/juju/unit-kubernetes-master-0.log 
+  960  sudo systemctl status flannel
+  961  sudo systemctl start flannel
+  962  sudo systemctl status flannel
+  963  sudo tail -f /var/log/juju/unit-kubernetes-master-0.log 
+  964  history
+  965  exit
+  966  ip addr
+  967  exit
+  968  docker ps
+  969  docker cp tf-build:/tmp/tensorflow-0.10.0rc0-cp27-none-linux_ppc64le.whl ./
+  970  ls -la
+  971  docker cp tf-build:/usr/bin/bazel ./bazel-0.2.0-ppc-protobuf-linux_ppc64le
+  972  ls -la
+  973  exit
+  974  docker ps
+  975  docker ps -a
+  976  docker start tf-build 
+  977  docker ps
+  978  docker attach -it tf-build
+  979  docker attach tf-build
+  980  docker ps -a
+  981  cd docker/nvidia-docker/
+  982  git pull origin ppc64le-new-images
+  983  cd ubuntu-14.04/tensorflow/r0.10.0rc0/
+  984  docker build --rm -t samnco/ppc64le-tensorflow:r0.10.0rc0 -f Dockerfile.gpu .
+  985  docker images
+  986  cd docker/nvidia-docker/ubuntu-14.04/tensorflow/
+  987  docker build --rm -t samnco/ppc64le-tensorflow:r0.10.0rc0 -f Dockerfile.gpu .
+  988  cd r0.10.0rc0/
+  989  docker build --rm -t samnco/ppc64le-tensorflow:r0.10.0rc0 -f Dockerfile.gpu .
+  990  ip addr
+  991  uname -a
+  992  sudo -i
+  993  ll
+  994  pwd
+  995  echo $UMASK
+  996  umask
+  997  touch testfile
+  998  ll testfile 
+  999  rm testfile 
+ 1000  umask 077
+ 1001  touchtestfile
+ 1002  touch testfile
+ 1003  ll testfile 
+ 1004  sudo -i
+ 1005  exit
+ 1006  docke rps
+ 1007  docker ps
+ 1008  docker cp sharp_gates:/tmp/tensorflow-0.10.0rc0-cp27-none-linux_ppc64le.whl ./tensorflow-0.10.0rc0-cp27-none-linux_ppc64le-cuda8.whl
+ 1009  cd docker/nvidia-docker/ubuntu-14.04/tensorflow/cuda-8.0/
+ 1010  ls
+ 1011  cd r0.10.0rc0/
+ 1012  docker ps
+ 1013  docker ps -a
+ 1014  docker start sharp_gates
+ 1015  docker attach sharp_gates
+ 1016  nano Dockerfile.gpu
+ 1017  docker build --rm -t samnco/ppc64le-tensorflow:r0.10.0rc0-8.0 -f Dockerfile.gpu .
+ 1018  nano Dockerfile.gpu
+ 1019  docker build --rm -t samnco/ppc64le-tensorflow:r0.10.0rc0-8.0 -f Dockerfile.gpu .
+ 1020  ls
+ 1021  history
+ 1022  history | grep http
+ 1023  exit
+ 1024  lxc list
+ 1025  history > history2-2.txt

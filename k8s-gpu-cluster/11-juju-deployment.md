@@ -1,6 +1,26 @@
 # Deploying with Juju
 ## Bootstrapping the environment
 
+First thing we need to do is connect Juju to MAAS.  We create a configuration file for MAAS as provider, maas-juju.yaml, with contents:
+​
+```
+  maas:
+    type: maas
+    auth-types: [oauth1]
+    endpoint: http://<MAAS_IP>/MAAS
+```
+
+Understand the MAAS_IP address as that from which Juju will interact with MAAS, including the nodes that are deployed. So you can use, in our setup, that of eth1 (192.168.32.1 for me)
+
+You can find more details on [this page](https://jujucharms.com/docs/devel/clouds-maas)
+
+Then we need to tell Juju to use MAAS: 
+​
+```
+$ juju add-cloud maas maas-juju.yaml
+$ juju add-credential maas
+```
+
 Juju needs to "bootstrap" which brings up a first control node, which will host the Juju Controller, the initial database and various other requirements. This node is the reason we have 2 management nodes. The second one will be our k8s Master. 
 
 In our setup our nodes have only manual power since WoL was removed from MAAS with v2.0. This means we'll need to trigger the bootstrap, wait for the node to be allocated, then start it manually. 
@@ -225,7 +245,7 @@ or
 At the end of the process we have: 
 
 ```
-$ $ juju status
+$ juju status
 MODEL    CONTROLLER       CLOUD/REGION  VERSION
 default  maas-controller  maas          2.0-beta15
 
@@ -272,9 +292,19 @@ MACHINE  STATE    DNS           INS-ID  SERIES  AZ
 
 ```
 
+We now need kubectl to query the cluster. We need to relate to [this k8s issue](https://github.com/kubernetes/kubernetes/issues/35643) and the method for Hypriot OS
 
 ```
-$ $ kubectl get nodes --show-labels
+$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+$ cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+$ apt-get update
+$ apt-get install -y kubectl
+```
+
+```
+$ kubectl get nodes --show-labels
 NAME      STATUS    AGE       LABELS
 node02    Ready     1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node02
 node03    Ready     1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node03
