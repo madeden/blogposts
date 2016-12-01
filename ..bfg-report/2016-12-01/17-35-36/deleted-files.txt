@@ -1,0 +1,2 @@
+c03ce14bc7b3a8f2a8e6876b3a5dba9043f5c3bc 134 bazel-0.2.0-ppc-protobuf-linux_ppc64le
+a85188b41a0512c01923d02147218d42f4a31e8b 130428530 bazel-0.2.0-ppc-protobuf-linux_ppc64le
