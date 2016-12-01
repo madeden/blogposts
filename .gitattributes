@@ -1,2 +1,4 @@
 *.tgz filter=lfs diff=lfs merge=lfs -text
 *.tar.gz filter=lfs diff=lfs merge=lfs -text
+bazel-0.2.0-ppc-protobuf-linux_ppc64le filter=lfs diff=lfs merge=lfs -text
+*.whl filter=lfs diff=lfs merge=lfs -text
