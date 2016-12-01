@@ -1,4 +1,0 @@
-8f6c63b42b6d8220b7bb348b83e1722b0b10c2f4 133 tensorflow-0.10.0rc0-cp27-none-linux_ppc64le-cuda8.whl
-10f4c4f13f8bacd4dbe6933d74569839e2be6ba5 77068649 tensorflow-0.10.0rc0-cp27-none-linux_ppc64le-cuda8.whl
-46a7a2ae30b7c03351dc1b32de17f4ef539caa09 79318177 tensorflow-0.10.0rc0-cp27-none-linux_ppc64le.whl
-0da746c3031bac0015c3738c219caf3ddf5b55a8 133 tensorflow-0.10.0rc0-cp27-none-linux_ppc64le.whl

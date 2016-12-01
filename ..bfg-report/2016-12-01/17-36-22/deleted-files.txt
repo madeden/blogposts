@@ -1,6 +1,0 @@
-30dabc82eccd9d77ae492c73e8896424feae5c20 4321338 flannel.tar.gz
-79452d8ac528c7efb33440318771ea9d496a688c 132 flannel.tar.gz
-69022f2110b93f42508b0aeccc31988c83befcbf 65721915 kubernetes-master-v1.3.8-ppc64le.tar.gz
-6f24c5628116e534c6d55e2ecb253052316844d4 133 kubernetes-master-v1.3.8-ppc64le.tar.gz
-2517a0e71b393e587d35759f5b8cf152eace73df 38974191 kubernetes-worker-v1.3.8-ppc64le.tar.gz
-df898170a8cf8dc2162d25ebea0754d8091a131f 133 kubernetes-worker-v1.3.8-ppc64le.tar.gz
