@@ -1,0 +1,342 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "Network Definition (VPC, Subnets to deploy apps)",
+  "Parameters" : {
+    "BackupBucket" : {
+      "Type" : "String",
+      "Description" : "S3 Bucket where the cluster shall be backed up"
+    }
+  },
+  "Resources" : {
+    "VPC" : {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "EnableDnsSupport" : "true",
+        "EnableDnsHostnames" : "true",
+        "CidrBlock" : "10.0.0.0/16",
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "PublicSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "MapPublicIpOnLaunch" : true,
+        "AvailabilityZone" : {
+          "Fn::Select" : [ "0", { "Fn::GetAZs" : "" } ]
+        },
+        "CidrBlock" : "10.0.1.0/24",
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "PublicSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "MapPublicIpOnLaunch" : true,
+        "AvailabilityZone" : {
+          "Fn::Select" : [ "1", { "Fn::GetAZs" : "" } ]
+        },
+        "CidrBlock" : "10.0.2.0/24",
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "InternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "VPCGatewayAttachment" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "InternetGatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+    "PublicRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "PublicRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "VPCGatewayAttachment",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PublicRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+    "PublicSubnetRouteTableAssociation1" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1" },
+        "RouteTableId" : { "Ref" : "PublicRouteTable" }
+      }
+    },
+    "PublicSubnetRouteTableAssociation2" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet2" },
+        "RouteTableId" : { "Ref" : "PublicRouteTable" }
+      }
+    },
+    "PublicSubnetNetworkAclAssociation1" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet1" },
+        "NetworkAclId" : { "Fn::GetAtt" : ["VPC", "DefaultNetworkAcl"] }
+      }
+    },
+    "PublicSubnetNetworkAclAssociation2" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnet2" },
+        "NetworkAclId" : { "Fn::GetAtt" : ["VPC", "DefaultNetworkAcl"] }
+      }
+    },
+    "NATGatewayEIP" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "Domain" : "vpc"
+      }
+    },
+    "NATGateway" : {
+      "Type" : "AWS::EC2::NatGateway",
+      "DependsOn" : "VPCGatewayAttachment",
+      "Properties" : {
+        "AllocationId" : {
+          "Fn::GetAtt" : [
+            "NATGatewayEIP",
+            "AllocationId"
+          ]
+        },
+        "SubnetId" : {
+          "Ref" : "PublicSubnet1"
+        }
+      }
+    },
+   "PrivateRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "PrivateRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : {
+          "Ref" : "PrivateRouteTable"
+        },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "NatGatewayId" : {
+          "Ref" : "NATGateway"
+        }
+      }
+    },
+    "PrivateSubnetRouteTableAssociation1" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTable" }
+      }
+    },
+    "PrivateSubnetRouteTableAssociation2" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet2" },
+        "RouteTableId" : { "Ref" : "PrivateRouteTable" }
+      }
+    },
+    "PrivateSubnetNetworkAclAssociation1" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet1" },
+        "NetworkAclId" : { "Fn::GetAtt" : ["VPC", "DefaultNetworkAcl"] }
+      }
+    },
+    "PrivateSubnetNetworkAclAssociation2" : {
+      "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PrivateSubnet2" },
+        "NetworkAclId" : { "Fn::GetAtt" : ["VPC", "DefaultNetworkAcl"] }
+      }
+    },
+    "PrivateSubnet1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : {
+          "Fn::Select" : [ "0", { "Fn::GetAZs" : "" } ]
+        },
+        "CidrBlock" : "10.0.251.0/24",
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "PrivateSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "AvailabilityZone" : {
+          "Fn::Select" : [ "1", { "Fn::GetAZs" : "" } ]
+        },
+        "CidrBlock" : "10.0.252.0/24",
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "FrontEndELBSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Front End Load Balancer - HTTP and HTTPS",
+        "VpcId" : { "Ref" : "VPC" },
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443
+          }
+        ],
+        "Tags" : [ 
+          {
+            "Key" : "Allocation", 
+            "Value" : "juju"
+          } 
+        ]
+      }
+    },
+    "IAMInstanceProfileDefault": {
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "IAMRoleDefault"
+          }
+        ]
+      },
+      "Type": "AWS::IAM::InstanceProfile"
+    },
+    "IAMRoleDefault": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "IAMPolicyDefault",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "AllowListingAllS3Buckets",
+                  "Effect": "Allow",
+                  "Action": [
+                      "s3:ListAllMyBuckets"
+                  ],
+                  "Resource": [
+                      "arn:aws:s3:::*"
+                  ]
+                },
+                {
+                  "Sid": "AllowBackupBucket",
+                  "Effect": "Allow",
+                  "Action": [ "s3:*" ],
+                  "Resource": [
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref": "BackupBucket"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:aws:s3:::",
+                          {
+                            "Ref": "BackupBucket"
+                          }
+                        ]
+                      ]
+                    }                    
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

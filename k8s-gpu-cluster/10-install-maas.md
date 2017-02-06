@@ -120,17 +120,17 @@ subnet 192.168.23.0 netmask 255.255.255.0 {
 
   host node01 {
     hardware ethernet F4:4D:30:64:ED:72;
-    fixed-address 192.168.23.13;
+    fixed-address 192.168.23.11;
   }
 
   host node02 {
     hardware ethernet F4:4D:30:64:4D:43;
-    fixed-address 192.168.23.13;
+    fixed-address 192.168.23.12;
   }
 
   host node03 {
     hardware ethernet B8:AE:ED:EB:87:27;
-    fixed-address 192.168.23.11;
+    fixed-address 192.168.23.13;
   }
 
   host node04 {
@@ -140,12 +140,12 @@ subnet 192.168.23.0 netmask 255.255.255.0 {
 
   host node05 {
     hardware ethernet F4:4D:30:63:47:C8;
-    fixed-address 192.168.23.13;
+    fixed-address 192.168.23.15;
   }
 
   host node06 {
     hardware ethernet B8:AE:ED:EB:2C:74;
-    fixed-address 192.168.23.12;
+    fixed-address 192.168.23.16;
   }
 }
 

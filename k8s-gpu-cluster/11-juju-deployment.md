@@ -4,6 +4,7 @@
 First thing we need to do is connect Juju to MAAS.  We create a configuration file for MAAS as provider, maas-juju.yaml, with contents:
 ​
 ```
+clouds:
   maas:
     type: maas
     auth-types: [oauth1]
@@ -20,6 +21,8 @@ Then we need to tell Juju to use MAAS: 
 $ juju add-cloud maas maas-juju.yaml
 $ juju add-credential maas
 ```
+
+Adding the credential for MAAS requires your API key, which is in the settings page of MAAS. 
 
 Juju needs to "bootstrap" which brings up a first control node, which will host the Juju Controller, the initial database and various other requirements. This node is the reason we have 2 management nodes. The second one will be our k8s Master. 
 
