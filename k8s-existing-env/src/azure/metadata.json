@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "2 tier VNet with NSGs and DMZ",
+  "description": "This template deploys a Virtual Network with 2 subnets, 2 Network Security Groups and appropriate security rules to make the Public subnet a DMZ",
+  "summary": "Install Virtual Network with DMZ Subnet",
+  "githubUsername": "SaMnCo",
+  "dateUpdated": "2015-04-10"
+}
