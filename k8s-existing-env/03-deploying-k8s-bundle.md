@@ -28,6 +28,7 @@ juju deploy --constraints "instance-type=m3.medium spaces=private" cs:~container
 
 Enforce the constraints and scale out etcd
 
+```
 juju set-constraints etcd "instance-type=m3.medium spaces=private"
 juju add-unit -n2 etcd
 ```
@@ -71,8 +72,7 @@ watch -c juju status --color
 
 and get a dynamic view on: 
 
-```
-# juju status                    
+```                 
 Model    Controller     Cloud/Region   Version
 default  k8s-us-west-2  aws/us-west-2  2.1-beta5
 
@@ -173,3 +173,4 @@ Now you can go to the DNS endpoint, refresh the app and see how the the applicat
 
 # Conclusion
 
+Using the Canonical Distribution of Kubernetes and AWS CloudFormation, we simulated the deployment of a Kubernetes cluster in an existing environment, instead of a Juju-generated network set up. Of course, this doesn't only apply to Kubernetes, and you can use the same mechanism for all the other workloads Juju can deploy, such as Big Data solutions. 
