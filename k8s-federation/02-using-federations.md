@@ -247,7 +247,7 @@ AZURE_INSTANCES="$(juju show-status kubernetes-worker --format json | jq --raw-o
 touch /tmp/zone.list
 for instance in ${AWS_INSTANCES} ${AZURE_INSTANCES}; 
 do 
-  echo "microbot.default.magicring.svc.demo.madeden.net. IN A ${instance}" | tee -a /tmp/zone.list
+  echo "microbots.demo.madeden.net. IN A ${instance}" | tee -a /tmp/zone.list
 done
 # Add a A record to the zone
 gcloud dns record-sets import -z demo-madeden \

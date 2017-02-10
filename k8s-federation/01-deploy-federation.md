@@ -22,7 +22,6 @@ Azure is relatively slow to spin up the whole thing, so you can let it go and we
 
 ## Amazon AWS
 
-juju bootstrap aws/us-west-2 k8s-us-west-2 --to "subnet=subnet-bb1ab2dc" --config vpc-id=vpc-fa6dfa9d --config vpc-id-force=true --bootstrap-constraints "root-disk=128G mem=8G" --credential canonical --bootstrap-series xenial
 
 ```
 # Bootstrap the Juju Controller
