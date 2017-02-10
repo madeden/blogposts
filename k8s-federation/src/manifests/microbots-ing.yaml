@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: microbot
+spec:
+ rules:
+   - host: microbots.demo.madeden.net
+     http:
+       paths:
+         - path: /
+           backend:
+             serviceName: microbot
+             servicePort: 80

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: '{"kind":"Service","apiVersion":"v1","metadata":{"name":"default-http-backend","namespace":"kube-system","creationTimestamp":null,"labels":{"k8s-app":"glbc","kubernetes.io/cluster-service":"true","kubernetes.io/name":"GLBCDefaultBackend"}},"spec":{"ports":[{"name":"http","protocol":"TCP","port":80,"targetPort":8080}],"selector":{"k8s-app":"glbc"},"type":"NodePort"},"status":{"loadBalancer":{}}}'
+  creationTimestamp: 2017-02-08T13:56:40Z
+  labels:
+    k8s-app: glbc
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: GLBCDefaultBackend
+  name: default-http-backend
+  namespace: default
+  resourceVersion: "49"
+  selfLink: /api/v1/namespaces/kube-system/services/default-http-backend
+  uid: 6a3b4575-ee06-11e6-9247-42010a8e0fe0
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    k8s-app: glbc
+  sessionAffinity: None
+  type: ClusterIP 
+status:
+  loadBalancer: {}
