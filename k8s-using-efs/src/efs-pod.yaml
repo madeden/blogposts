@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-consumer
+spec:
+  template:
+    metadata:
+      name: pi
+    spec:
+      containers:
+      - name: data-consumer
+        image: super-container:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: "/efs"
+          name: efs
+      volumes:
+        - name: efs
+          persistentVolumeClaim:
+            claimName: efs-volume
+      restartPolicy: Never

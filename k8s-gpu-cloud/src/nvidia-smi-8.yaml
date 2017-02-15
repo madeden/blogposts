@@ -1,0 +1,87 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nvidia-smi-8gpu
+  labels:
+    name: nvidia-smi-8gpu
+spec:
+  template:
+    metadata:
+      labels:
+        name: nvidia-smi-8gpu
+    spec:
+      containers:
+      - name: nvidia-smi-8gpu
+        image: nvidia/cuda
+        command: [ "nvidia-smi" ]
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            alpha.kubernetes.io/nvidia-gpu: 1
+          limits:
+            alpha.kubernetes.io/nvidia-gpu: 1 
+        volumeMounts:
+        - mountPath: /dev/nvidia0
+          name: nvidia0
+        - mountPath: /dev/nvidia1
+          name: nvidia1
+        - mountPath: /dev/nvidia2
+          name: nvidia2
+        - mountPath: /dev/nvidia3
+          name: nvidia3
+        - mountPath: /dev/nvidia4
+          name: nvidia4
+        - mountPath: /dev/nvidia5
+          name: nvidia5
+        - mountPath: /dev/nvidia6
+          name: nvidia6
+        - mountPath: /dev/nvidia7
+          name: nvidia7
+        - mountPath: /dev/nvidiactl
+          name: nvidiactl
+        - mountPath: /dev/nvidia-uvm
+          name: nvidia-uvm
+        - mountPath: /usr/local/nvidia/bin
+          name: bin
+        - mountPath: /usr/lib/nvidia
+          name: lib
+      volumes:
+        - name: nvidia0
+          hostPath: 
+            path: /dev/nvidia0
+        - name: nvidia1
+          hostPath: 
+            path: /dev/nvidia1
+        - name: nvidia2
+          hostPath: 
+            path: /dev/nvidia2
+        - name: nvidia3
+          hostPath: 
+            path: /dev/nvidia3
+        - name: nvidia4
+          hostPath: 
+            path: /dev/nvidia4
+        - name: nvidia5
+          hostPath: 
+            path: /dev/nvidia5
+        - name: nvidia6
+          hostPath: 
+            path: /dev/nvidia6
+        - name: nvidia7
+          hostPath: 
+            path: /dev/nvidia7
+        - name: nvidiactl
+          hostPath: 
+            path: /dev/nvidiactl
+        - name: nvidia-uvm
+          hostPath: 
+            path: /dev/nvidia-uvm
+        - name: bin
+          hostPath: 
+            path: /usr/lib/nvidia-375/bin
+        - name: lib
+          hostPath: 
+            path: /usr/lib/nvidia-375
+      restartPolicy: Never
