@@ -1,92 +1,142 @@
 series: xenial
-services:
-  easyrsa:
-    annotations:
-      gui-x: '450'
-      gui-y: '550'
-    charm: cs:~containers/easyrsa-6
-    num_units: 1
-    to: 
-    - 'lxd:0'
-  etcd:
-    annotations:
-      gui-x: '800'
-      gui-y: '550'
-    charm: cs:~containers/etcd-23
-    num_units: 1
-    to: 
-    - '0'
-  flannel:
-    annotations:
-      gui-x: '450'
-      gui-y: '750'
-    charm: cs:~containers/flannel-10
-  kubernetes-master:
-    annotations:
-      gui-x: '800'
-      gui-y: '850'
-    charm: cs:~containers/kubernetes-master-11
-    expose: true
-    num_units: 1
-    contraints: "instance-type=m3.medium"
-    to:
-    - '0'
-  kubernetes-worker-cpu:
-    annotations:
-      gui-x: '100'
-      gui-y: '850'
-    charm: cs:~containers/kubernetes-worker-13
-    expose: true
+applications: 
+  cuda: 
+    charm: "local:xenial/cuda-2"
+    annotations: 
+      "gui-x": "911.5"
+      "gui-y": "994.4101615137754"
+  "kubernetes-worker-cpu": 
+    charm: "cs:~containers/kubernetes-worker-13"
     num_units: 3
-    contraints: "instance-type=m4.2xlarge"
-  kubernetes-worker-gpu:
-    annotations:
-      gui-x: '100'
-      gui-y: '850'
-    charm: cs:~containers/kubernetes-worker-13
+    options: 
+      "enable-cgroups": falsetrue
+      ingress: truetrue
+      install_from_upstream: falsetrue
+    constraints: "instance-type=m4.2xlarge"
     expose: true
+    annotations: 
+      "gui-x": "1311.5"
+      "gui-y": "994.4101615137754"
+    to: 
+      - "3"
+      - "4"
+      - "5"
+  "kubernetes-worker-gpu8": 
+    charm: "cs:~containers/kubernetes-worker-13"
     num_units: 1
-    contraints: "instance-type=p2.xlarge"
-  kubernetes-worker-gpu8:
-    annotations:
-      gui-x: '100'
-      gui-y: '850'
-    charm: cs:~containers/kubernetes-worker-13
+    options: 
+      "enable-cgroups": falsetrue
+      ingress: truetrue
+      install_from_upstream: falsetrue
+    constraints: "instance-type=p2.8xlarge"
     expose: true
+    annotations: 
+      "gui-x": "1111.5"
+      "gui-y": "648"
+    to: 
+      - "2"
+  "kubernetes-worker-gpu": 
+    charm: "cs:~containers/kubernetes-worker-13"
     num_units: 1
-    contraints: "instance-type=p2.8xlarge"
-relations:
-- - kubernetes-master:cluster-dns
-  - kubernetes-worker-cpu:kube-dns
-- - kubernetes-master:certificates
-  - easyrsa:client
-- - etcd:certificates
-  - easyrsa:client
-- - kubernetes-master:etcd
-  - etcd:db
-- - kubernetes-worker-cpu:certificates
-  - easyrsa:client
-- - kubernetes-worker-cpu:kube-api-endpoint
-  - kubernetes-master:kube-api-endpoint
-- - flannel:etcd
-  - etcd:db
-- - flannel:cni
-  - kubernetes-master:cni
-- - flannel:cni
-  - kubernetes-worker-cpu:cni
-- - kubernetes-worker-gpu:kube-api-endpoint
-  - kubernetes-master:kube-api-endpoint
-- - kubernetes-master:cluster-dns
-  - kubernetes-worker-gpu:kube-dns
-- - kubernetes-worker-gpu:certificates
-  - easyrsa:client
-- - flannel:cni
-  - kubernetes-worker-gpu:cni
-- - kubernetes-worker-gpu8:kube-api-endpoint
-  - kubernetes-master:kube-api-endpoint
-- - kubernetes-master:cluster-dns
-  - kubernetes-worker-gpu8:kube-dns
-- - kubernetes-worker-gpu8:certificates
-  - easyrsa:client
-- - flannel:cni
-  - kubernetes-worker-gpu8:cni
+    options: 
+      "enable-cgroups": falsetrue
+      ingress: truetrue
+      install_from_upstream: falsetrue
+    constraints: "instance-type=p2.xlarge"
+    expose: true
+    annotations: 
+      "gui-x": "1511.5"
+      "gui-y": "648"
+    to: 
+      - "1"
+  flannel: 
+    charm: "cs:~containers/flannel-10"
+    annotations: 
+      "gui-x": "1711.5"
+      "gui-y": "994.4101615137754"
+  easyrsa: 
+    charm: "cs:~containers/easyrsa-6"
+    num_units: 1
+    annotations: 
+      "gui-x": "1311.5"
+      "gui-y": "301.58983848622455"
+    to: 
+      - "lxd:etcd/0"
+  etcd: 
+    charm: "cs:~containers/etcd-23"
+    num_units: 1
+    annotations: 
+      "gui-x": "911.5"
+      "gui-y": "301.58983848622455"
+    to: 
+      - "0"
+  "kubernetes-master": 
+    charm: "cs:~containers/kubernetes-master-11"
+    num_units: 1
+    options: 
+      "enable-dashboard-addons": truetrue
+    constraints: "cores=4 mem=8192 root-disk=32768"
+    expose: true
+    annotations: 
+      "gui-x": "711.5"
+      "gui-y": "648"
+    to: 
+      - "0"
+relations: 
+  - - "kubernetes-master:certificates"
+    - "easyrsa:client"
+  - - "etcd:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-master:etcd"
+    - "etcd:db"
+  - - "flannel:etcd"
+    - "etcd:db"
+  - - "flannel:cni"
+    - "kubernetes-master:cni"
+  - - "kubernetes-worker-gpu:kube-api-endpoint"
+    - "kubernetes-master:kube-api-endpoint"
+  - - "kubernetes-master:cluster-dns"
+    - "kubernetes-worker-gpu:kube-dns"
+  - - "kubernetes-worker-gpu:certificates"
+    - "easyrsa:client"
+  - - "flannel:cni"
+    - "kubernetes-worker-gpu:cni"
+  - - "kubernetes-worker-gpu8:kube-api-endpoint"
+    - "kubernetes-master:kube-api-endpoint"
+  - - "kubernetes-master:cluster-dns"
+    - "kubernetes-worker-gpu8:kube-dns"
+  - - "kubernetes-worker-gpu8:certificates"
+    - "easyrsa:client"
+  - - "flannel:cni"
+    - "kubernetes-worker-gpu8:cni"
+  - - "kubernetes-worker-cpu:kube-api-endpoint"
+    - "kubernetes-master:kube-api-endpoint"
+  - - "kubernetes-master:cluster-dns"
+    - "kubernetes-worker-cpu:kube-dns"
+  - - "kubernetes-worker-cpu:certificates"
+    - "easyrsa:client"
+  - - "flannel:cni"
+    - "kubernetes-worker-cpu:cni"
+  - - "cuda:juju-info"
+    - "kubernetes-worker-gpu:juju-info"
+  - - "cuda:juju-info"
+    - "kubernetes-worker-gpu8:juju-info"
+machines: 
+  "0": 
+    series: xenial
+    constraints: "arch=amd64 cpu-cores=4 cpu-power=1679 mem=16384 root-disk=32768"
+  "1": 
+    series: xenial
+    constraints: "arch=amd64 cpu-cores=4 cpu-power=400 mem=62464 root-disk=65536"
+  "2": 
+    series: xenial
+    constraints: "arch=amd64 cpu-cores=32 cpu-power=3200 mem=499712 root-disk=65536"
+  "3": 
+    series: xenial
+    constraints: "arch=amd64 cpu-cores=8 cpu-power=2688 mem=32768 root-disk=65536"
+  "4": 
+    series: xenial
+    constraints: "arch=amd64 cpu-cores=8 cpu-power=2688 mem=32768 root-disk=65536"
+  "5": 
+    series: xenial
+    constraints: "arch=amd64 cpu-cores=8 cpu-power=2688 mem=32768 root-disk=65536"

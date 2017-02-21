@@ -69,49 +69,49 @@ do
         --subnet-id ${subnet} \
         --security-groups ${SG_ID}
 done
-{
-    "LifeCycleState": "creating",
-    "IpAddress": "172.31.24.140",
-    "OwnerId": "131768076974",
-    "NetworkInterfaceId": "eni-8c0bb86c",
-    "MountTargetId": "fsmt-d900b590",
-    "SubnetId": "subnet-26300e52",
-    "FileSystemId": "fs-69de7c20"
-}
-{
-    "OwnerId": "131768076974",
-    "NetworkInterfaceId": "eni-265845ce",
-    "SubnetId": "subnet-418dea7b",
-    "FileSystemId": "fs-69de7c20",
-    "LifeCycleState": "creating",
-    "MountTargetId": "fsmt-da00b593",
-    "IpAddress": "172.31.63.172"
-}
-{
-    "IpAddress": "172.31.6.243",
-    "NetworkInterfaceId": "eni-8d930649",
-    "SubnetId": "subnet-0cc0984a",
-    "FileSystemId": "fs-69de7c20",
-    "OwnerId": "131768076974",
-    "MountTargetId": "fsmt-dc00b595",
-    "LifeCycleState": "creating"
-}
-{
-    "SubnetId": "subnet-645b204c",
-    "FileSystemId": "fs-69de7c20",
-    "NetworkInterfaceId": "eni-17f676e5",
-    "OwnerId": "131768076974",
-    "IpAddress": "172.31.44.34",
-    "LifeCycleState": "creating",
-    "MountTargetId": "fsmt-df00b596"
-}
+# {
+#     "LifeCycleState": "creating",
+#     "IpAddress": "172.31.24.140",
+#     "OwnerId": "131768076974",
+#     "NetworkInterfaceId": "eni-8c0bb86c",
+#     "MountTargetId": "fsmt-d900b590",
+#     "SubnetId": "subnet-26300e52",
+#     "FileSystemId": "fs-69de7c20"
+# }
+# {
+#     "OwnerId": "131768076974",
+#     "NetworkInterfaceId": "eni-265845ce",
+#     "SubnetId": "subnet-418dea7b",
+#     "FileSystemId": "fs-69de7c20",
+#     "LifeCycleState": "creating",
+#     "MountTargetId": "fsmt-da00b593",
+#     "IpAddress": "172.31.63.172"
+# }
+# {
+#     "IpAddress": "172.31.6.243",
+#     "NetworkInterfaceId": "eni-8d930649",
+#     "SubnetId": "subnet-0cc0984a",
+#     "FileSystemId": "fs-69de7c20",
+#     "OwnerId": "131768076974",
+#     "MountTargetId": "fsmt-dc00b595",
+#     "LifeCycleState": "creating"
+# }
+# {
+#     "SubnetId": "subnet-645b204c",
+#     "FileSystemId": "fs-69de7c20",
+#     "NetworkInterfaceId": "eni-17f676e5",
+#     "OwnerId": "131768076974",
+#     "IpAddress": "172.31.44.34",
+#     "LifeCycleState": "creating",
+#     "MountTargetId": "fsmt-df00b596"
+# }
 ```
 
 And you are now ready to add storage in CDK
 
 # Consuming from a different host
 
-If you want to consume EFS fron a different node, you can via: 
+If you want to consume EFS from a different node, you can via: 
 
 ```
 sudo apt install -yqq nfs-common

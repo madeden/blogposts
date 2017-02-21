@@ -2,11 +2,13 @@
 
 To consume storage like EFS in Kubernetes, you need 2 primitives: 
 
-* Persistent Volumes (PV), which define large storage allocations that can be sliced into separate sub-volumes. Think of this as a disk that you could partition essentially. 
-* Persistent Volume Claims (PVC): this is a chunk / partition of a PV that is allocated to one or more pods. If you have several PVs, Kubebernetes will elect the most suitable PV to consume data from. PVCs can have different Read/Write properties: 
-    * Read Only: like secrets
-    * ReadManyWriteOnce: only one pod can write, but many can read. If you have a master/agent deployment for example
-    * ReadWriteMany: everyone can read and write. If you have to exchange files between different micro services, this is a simple way of doing so
+* Persistent Volumes (PV), which define large storage allocations that can be sliced into separate sub-volumes. Think of this as a disk that you could partition essentially. PVs are managed by the administrator.
+* Persistent Volume Claims (PVC): this is a chunk / partition of a PV that is allocated to one or more pods. If you have several PVs, Kubebernetes will elect the most suitable PV to consume data from. PVC are consumed by the users of the cluster.
+
+PVCs can have different Read/Write properties: 
+  * Read Only: like secrets
+  * ReadManyWriteOnce: only one pod can write, but many can read. If you have a master/agent deployment for example
+  * ReadWriteMany: everyone can read and write. If you have to exchange files between different micro services, this is a simple way of doing so
 
 A PV will look like 
 
