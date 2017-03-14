@@ -1,0 +1,166 @@
+Created tunnel using local port: '38153'
+SERVER: "localhost:38153"
+CHART PATH: /home/scozannet/Documents/src/blogs/me-blogposts/k8s-dl/src/charts/dataloader
+NAME:   dataloader
+REVISION: 1
+RELEASED: Mon Feb 27 05:36:34 2017
+CHART: dataloader-0.1.0
+USER-SUPPLIED VALUES:
+{}
+
+COMPUTED VALUES:
+dataLoader:
+  image:
+    dockerTag: dl-1.0.0-0.0.3
+    name: tf-models
+    repo: samnco
+  service:
+    command: '[ "/download.sh" ]'
+    name: dataloader
+  settings:
+    dataset: flowers
+    imagenetApiKey: bar
+    imagenetUsername: foo
+efs:
+  global:
+    imagePullPolicy: IfNotPresent
+    services:
+      aws:
+        efs:
+          id: fs-47cd610e
+        region: us-east-1
+  storage:
+    accessMode: ReadWriteMany
+    name: tensorflow-fs
+    pv:
+      capacity: 900Gi
+    pvc:
+      request: 750Gi
+global:
+  imagePullPolicy: IfNotPresent
+  services:
+    aws:
+      efs:
+        id: fs-47cd610e
+      region: us-east-1
+storage:
+  accessMode: ReadWriteMany
+  name: tensorflow-fs
+  pv:
+    capacity: 900Gi
+  pvc:
+    request: 750Gi
+
+HOOKS:
+MANIFEST:
+
+---
+# Source: dataloader/charts/efs/templates/storage.yaml
+# Creating the PV first
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tensorflow-fs
+  namespace: default
+  labels:
+    heritage: "Tiller"
+    chart: "efs-0.0.1"
+    release: "dataloader"
+  annotations:
+    "helm.sh/created": "1488170194"
+spec:
+  capacity:
+    storage: 900Gi
+  accessModes:
+  - ReadWriteMany
+  nfs:
+    server: fs-47cd610e.efs.us-east-1.amazonaws.com
+    path: "/"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: tensorflow-fs
+  namespace: default
+  labels:
+    heritage: "Tiller"
+    chart: "efs-0.0.1"
+    release: "dataloader"
+  annotations:
+    "helm.sh/created": "1488170194"
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 750Gi
+---
+# Source: dataloader/templates/dataloader-job.yaml
+---
+# Job for data download
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dataloader
+  namespace: default
+  labels:
+    heritage: "Tiller"
+    chart: "dataloader-0.1.0"
+    release: "dataloader"
+  annotations:
+    "helm.sh/created": "1488170194"
+spec:
+  template:
+    metadata:
+      name: dataloader
+      labels:
+        app: dataloader
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: dataloader
+        image: samnco/tf-models:dl-1.0.0-0.0.3
+        command: [ "/download.sh" ]
+        env:
+        - name: DATASET
+          value: flowers
+        - name: IMAGENET_USERNAME
+          value: foo
+        - name: IMAGENET_ACCESS_KEY
+          value: bar
+        volumeMounts:
+        - name: tensorflow-fs
+          mountPath: /var/tensorflow
+      volumes:
+      - name: tensorflow-fs
+        persistentVolumeClaim:
+          claimName: tensorflow-fs
+
+LAST DEPLOYED: Mon Feb 27 05:36:34 2017
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/PersistentVolume
+NAME           CAPACITY  ACCESSMODES  RECLAIMPOLICY  STATUS  CLAIM                  REASON  AGE
+tensorflow-fs  900Gi     RWX          Retain         Bound   default/tensorflow-fs  1s
+
+==> v1/PersistentVolumeClaim
+NAME           STATUS  VOLUME         CAPACITY  ACCESSMODES  AGE
+tensorflow-fs  Bound   tensorflow-fs  900Gi     RWX          1s
+
+==> batch/v1/Job
+NAME        DESIRED  SUCCESSFUL  AGE
+dataloader  1        0           1s
+
+
+NOTES:
+This service is a download only service, which aims at emulating a batch data ingest service. There is no interaction with it.
+
+Monitor the status of the job with: 
+
+kubectl logs -f $(kubectl get pod -o name -l app=dataloader)
+
+This can take a LOT of time (about 3 days) so be patient. 
+
+

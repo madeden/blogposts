@@ -1,0 +1,2 @@
+k8s-dl/src/docker/tf-models/bin/bazel filter=lfs diff=lfs merge=lfs -text
+k8s-dl/src/docker/tf-models/bin/bazel-real filter=lfs diff=lfs merge=lfs -text

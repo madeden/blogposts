@@ -1,0 +1,24 @@
+{{- $relname := .Release.Namespace -}}
+{{- $type := .Values.tfCluster.service.type -}}
+{{- $externalPort := .Values.tfCluster.service.externalPort -}}
+{{- $internalPort := .Values.tfCluster.service.internalPort -}}
+---
+{{- range $job, $nb := .Values.tfCluster.settings.jobs }}
+{{ range $i, $e := until (int $nb) | default 8 }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $job }}-{{$i}}
+  namespace: {{ $relname }}
+spec:
+  type: {{ $type | quote }}
+  ports:
+  - port: {{ $externalPort }}
+    targetPort: {{ $internalPort }}
+    protocol: TCP
+  selector:
+    job: {{ $job }}
+    task: t{{$i}}
+---
+{{ end }}
+{{- end }}

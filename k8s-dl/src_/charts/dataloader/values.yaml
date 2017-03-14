@@ -1,0 +1,29 @@
+global:
+  imagePullPolicy: IfNotPresent
+  services:
+    aws:
+      region: us-east-1
+      efs:
+        id: fs-47cd610e
+
+storage:
+  name: tensorflow-fs
+  accessMode: ReadWriteMany
+  pv: 
+    capacity: "900Gi"
+  pvc:
+    request: "750Gi"
+
+dataLoader:
+  service:
+    name: dataloader
+    command: '[ "/download.sh" ]'
+  settings:
+    dataset: flowers
+    imagenetUsername: foo
+    imagenetApiKey: bar
+  image: 
+    repo: samnco
+    name: tf-models
+    dockerTag: dl-1.0.0-0.0.3
+

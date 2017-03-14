@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart to manage EFS Storage
+name: efs
+version: 0.0.1

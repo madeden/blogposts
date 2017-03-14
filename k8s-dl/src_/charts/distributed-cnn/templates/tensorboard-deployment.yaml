@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Values.tensorboard.service.name | trunc 24 }}
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{.Values.tensorboard.service.name | trunc 24 }}
+    heritage: {{.Release.Service | quote }}
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{.Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: {{.Values.tensorboard.replicaCount}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.tensorboard.service.name | trunc 24 }}
+    spec:
+      containers:
+      - name: {{.Values.tensorboard.service.name | trunc 24 }}
+        resources:
+{{ toYaml .Values.tensorboard.resources | indent 12 }}
+        image: {{.Values.tensorboard.image.repo}}/{{.Values.tensorboard.image.name}}:{{.Values.tensorboard.image.dockerTag}}
+        imagePullPolicy: {{.Values.global.imagePullPolicy}}
+        command: {{.Values.tensorboard.service.command}}
+        ports:
+        - name: tensorboard
+          containerPort: {{ .Values.tensorboard.service.internalPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: {{ .Values.storage.name }}
+          mountPath: /var/tensorflow
+      volumes:
+      - name: {{ .Values.storage.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.name }}
+

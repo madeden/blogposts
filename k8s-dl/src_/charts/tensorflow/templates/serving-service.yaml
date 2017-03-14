@@ -1,0 +1,37 @@
+# Serving Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.serving.service.name | trunc 24 }}
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{.Values.serving.service.name | trunc 24 }}
+    heritage: {{.Release.Service | quote }}
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{.Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  type: {{.Values.serving.service.type | quote }}
+  selector:
+    app: {{.Values.serving.service.name | trunc 24 }}
+  ports:
+  - name: http
+    port: {{.Values.serving.service.externalPort}}
+    targetPort: {{.Values.serving.service.internalPort}}
+    protocol: TCP
+---
+# Serving Ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{.Values.serving.service.name | trunc 24 }}
+spec:
+  rules:
+  - host: {{.Values.serving.service.dns | trunc 24 }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{.Values.serving.service.name | trunc 24 }}
+          servicePort: {{.Values.serving.service.externalPort}}

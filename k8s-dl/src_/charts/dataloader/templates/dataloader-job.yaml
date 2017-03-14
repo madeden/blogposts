@@ -1,0 +1,39 @@
+---
+# Job for data download
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.dataLoader.service.name | trunc 24 }}
+  namespace: {{ .Release.Namespace}}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
+spec:
+  template:
+    metadata:
+      name: {{ .Values.dataLoader.service.name | trunc 24 }}
+      labels:
+        app: {{ .Values.dataLoader.service.name | trunc 24 }}
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: {{ .Values.dataLoader.service.name | trunc 24 }}
+        image: {{ .Values.dataLoader.image.repo}}/{{ .Values.dataLoader.image.name }}:{{ .Values.dataLoader.image.dockerTag }}
+        command: {{ .Values.dataLoader.service.command }}
+        env:
+        - name: DATASET
+          value: {{ .Values.dataLoader.settings.dataset }}
+        - name: IMAGENET_USERNAME
+          value: {{ .Values.dataLoader.settings.imagenetUsername }}
+        - name: IMAGENET_ACCESS_KEY
+          value: {{ .Values.dataLoader.settings.imagenetApiKey }}
+        volumeMounts:
+        - name: {{ .Values.storage.name }}
+          mountPath: /var/tensorflow
+      volumes:
+      - name: {{ .Values.storage.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.name }}

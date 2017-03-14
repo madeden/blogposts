@@ -1,0 +1,9 @@
+dependencies:
+- condition: ""
+  enabled: false
+  name: efs
+  repository: http://localhost:8879/charts
+  tags: null
+  version: 0.0.1
+digest: sha256:07fee19fe96dda67aacf1112972cce803ca35202a53b7c04eb5e55b7ddb2eb7b
+generated: 2017-02-27T05:14:31.319595291+01:00

@@ -1,0 +1,10 @@
+1. Create the DNS A-records or CNAME records pointing to:
+
+  for WORKER_TYPE in gpu gpu8
+  do
+      juju show-status kubernetes-worker-${WORKER_TYPE} --format json | \
+          jq --raw-output '.applications."kubernetes-worker-'${WORKER_TYPE}'".units[]."public-address'
+  done
+
+2. Enjoy Tensorflow on {{.Values.tensorboard.service.dns}}
+

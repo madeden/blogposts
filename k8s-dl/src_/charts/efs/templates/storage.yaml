@@ -1,0 +1,38 @@
+# Creating the PV first
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.storage.name }}
+  namespace: {{.Release.Namespace}}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    release: {{.Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  capacity:
+    storage: {{ .Values.storage.pv.capacity }}
+  accessModes:
+  - {{ .Values.storage.accessMode }}
+  nfs:
+    server: {{.Values.global.services.aws.efs.id}}.efs.{{.Values.global.services.aws.region}}.amazonaws.com
+    path: "/"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.storage.name }}
+  namespace: {{.Release.Namespace}}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    release: {{.Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  accessModes:
+  - {{ .Values.storage.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.storage.pvc.request }}

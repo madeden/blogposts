@@ -1,0 +1,66 @@
+# Creating the PV first
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tensorflow-fs
+  namespace: default
+  labels:
+    heritage: out-of-band
+    chart: chartless
+    release: out-of-band
+spec:
+  capacity:
+    storage: 900Gi
+  accessModes:
+  - ReadWriteMany
+  nfs:
+    server: fs-47cd610e.efs.us-east-1.amazonaws.com
+    path: "/"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: tensorflow-fs
+  namespace: default
+  labels:
+    heritage: out-of-band
+    chart: chartless
+    release: out-of-band
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 750Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: load-imagenet
+  namespace: default
+  labels:
+    heritage: out-of-band
+    chart: chartless
+    release: out-of-band
+spec:
+  template:
+    metadata:
+      name: load-imagenet
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: load-imagenet
+        image: samnco/tf-models:dl-1.0.0
+        command: [ "/download.sh" ]
+        env:
+        - name: IMAGENET_USERNAME
+          value: "scozannet"
+        - name: IMAGENET_ACCESS_KEY
+          value: "foobar"
+        volumeMounts:
+        - name: tensorflow-fs
+          mountPath: /var/tensorflow
+      volumes:
+      - name: tensorflow-fs
+        persistentVolumeClaim:
+          claimName: tensorflow-fs

@@ -1,0 +1,4 @@
+dependencies:
+  - name: efs
+    repository: http://localhost:8879/charts
+    version: 0.0.1

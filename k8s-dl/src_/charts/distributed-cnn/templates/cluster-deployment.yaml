@@ -1,0 +1,106 @@
+{{- $relname := .Release.Namespace -}}
+{{- $storname := .Values.storage.name -}}
+{{- $repo := .Values.tfCluster.image.repo -}}
+{{- $image := .Values.tfCluster.image.name -}}
+{{- $tag := .Values.tfCluster.image.dockerTag -}}
+{{- $port := .Values.tfCluster.service.internalPort -}}
+{{- $isGpu := .Values.tfCluster.settings.isGpu -}}
+
+---
+# Defining a generic configuration file for the cluster
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tensorflow-cluster-config
+  namespace: {{.Release.Namespace}}
+data:
+  clusterconfig: >
+        {
+        {{- range $job, $nb := .Values.tfCluster.settings.jobs }}
+          {{ $job | quote }}: [
+          {{ range $i, $e := until (int $nb) | default 8 }}
+            "{{ $job }}-{{$i}}.{{ $relname }}.svc.cluster.local:8080",
+          {{ end }}
+              ],
+        {{- end }}
+        }
+---
+{{- range $job, $nb := .Values.tfCluster.settings.jobs }}
+{{ range $i, $e := until (int $nb) | default 8 }}
+# Definiting a scalable cluster
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $job }}-{{$i}}
+  namespace: {{ $relname }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      job: {{ $job }}
+      task: t{{$i}}
+  template:
+    metadata:
+      labels:
+        job: {{ $job }}
+        task: t{{$i}}
+    spec:
+      containers:
+      - name: tf-grpc-server
+        image: {{ $repo }}/{{ $image }}:{{ $tag }}
+        {{ if eq $job "worker" }}
+        {{ if $isGpu }}
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            alpha.kubernetes.io/nvidia-gpu: 1
+          limits:
+            alpha.kubernetes.io/nvidia-gpu: 1 
+        volumeMounts:
+        - mountPath: /dev/nvidia0
+          name: nvidia0
+        {{ end }}
+        {{ end }}
+        ports:
+        - name: grpc-server
+          containerPort: {{ $port }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: CLUSTER_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: tensorflow-cluster-config
+              key: clusterconfig
+        volumeMounts:
+        - name: tensorflow-fs
+          mountPath: /var/tensorflow
+      volumes:
+      - name: tensorflow-fs
+        persistentVolumeClaim:
+          claimName: {{ $storname }}
+      {{ if eq $job "worker" }}
+      {{ if $isGpu }}
+      - name: nvidia0
+        hostPath: 
+          path: /dev/nvidia0
+      - name: nvidiactl
+        hostPath: 
+          path: /dev/nvidiactl
+      - name: nvidia-uvm
+        hostPath: 
+          path: /dev/nvidia-uvm
+      - name: bin
+        hostPath: 
+          path: /usr/lib/nvidia-375/bin
+      - name: lib
+        hostPath: 
+          path: /usr/lib/nvidia-375
+      {{ end }}
+      {{ end }}
+---
+{{ end }}
+{{- end }}

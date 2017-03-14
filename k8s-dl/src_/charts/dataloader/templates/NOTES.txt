@@ -1,0 +1,8 @@
+This service is a download only service, which aims at emulating a batch data ingest service. There is no interaction with it.
+
+Monitor the status of the job with: 
+
+kubectl logs -f $(kubectl get pod -o name -l app={{ .Values.dataLoader.service.name }})
+
+This can take a LOT of time (about 3 days) so be patient. 
+

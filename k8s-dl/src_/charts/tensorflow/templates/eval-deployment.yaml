@@ -1,0 +1,137 @@
+{{- $repo := .Values.evaluating.image.repo -}}
+{{- $image := .Values.evaluating.image.name -}}
+{{- $tagGpu := .Values.evaluating.image.dockerTagGpu -}}
+{{- $tagCpu := .Values.evaluating.image.dockerTagCpu -}}
+{{- $nbGpu := .Values.evaluating.settings.nbGpuPerNode -}}
+{{- $isGpu := .Values.evaluating.settings.isGpu -}}
+---
+# Tensorboard deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Values.tensorboard.service.name | trunc 24 }}
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{.Values.tensorboard.service.name | trunc 24 }}
+    heritage: {{.Release.Service | quote }}
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{ .Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: {{ .Values.tensorboard.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.tensorboard.service.name | trunc 24 }}
+    spec:
+      containers:
+      - name: {{ .Values.tensorboard.service.name | trunc 24 }}
+        resources:
+{{ toYaml .Values.tensorboard.resources | indent 12 }}
+        image: {{ .Values.tensorboard.image.repo }}/{{ .Values.tensorboard.image.name }}:{{ .Values.tensorboard.image.dockerTag }}
+        imagePullPolicy: {{  .Values.global.imagePullPolicy }}
+        command: {{ .Values.tensorboard.service.command }}
+        ports:
+        - name: tensorboard
+          containerPort: {{ .Values.tensorboard.service.internalPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: {{ .Values.storage.name }}
+          mountPath: /var/tensorflow
+      volumes:
+      - name: {{ .Values.storage.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.name }}
+---
+# Evaluation deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Values.evaluating.service.name | trunc 24 }}
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{.Values.evaluating.service.name | trunc 24 }}
+    heritage: {{.Release.Service | quote }}
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{.Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: {{.Values.evaluating.replicaCount}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.evaluating.service.name | trunc 24 }}
+    spec:
+      nodeSelector:
+        eval: "true"
+      containers:
+      - name: {{.Values.evaluating.service.name | trunc 24 }}
+        {{ if $isGpu }}
+        image: {{ $repo }}/{{ $image }}:{{ $tagGpu }}
+        securityContext:
+          privileged: true
+        {{ else }}
+        image: {{ $repo }}/{{ $image }}:{{ $tagCpu }}        
+        {{ end }}        
+        imagePullPolicy: {{.Values.global.imagePullPolicy}}
+        command: {{.Values.evaluating.service.command}}
+        resources:
+          requests:
+{{ toYaml .Values.evaluating.resources.requests | indent 12 }}            
+            {{ if $isGpu }}alpha.kubernetes.io/nvidia-gpu: {{ $nbGpu }}{{ end }}
+          limits:
+{{ toYaml .Values.evaluating.resources.limits | indent 12 }}            
+            {{ if $isGpu }}alpha.kubernetes.io/nvidia-gpu: {{ $nbGpu }}{{ end }}    
+        env:
+        - name: DATASET
+          value: {{ .Values.evaluating.settings.dataset }}
+        - name: LD_LIBRARY_PATH
+          value: "$LD_LIBRARY_PATH:/usr/lib/nvidia:/usr/lib/cuda"
+        volumeMounts:
+        {{ if $isGpu }}
+          {{ range $j, $f := until (int $nbGpu) | default 1 }}
+        - mountPath: /dev/nvidia{{ $j }}
+          name: nvidia{{ $j }}
+          {{ end }}
+        - mountPath: /dev/nvidiactl
+          name: nvidiactl
+        - mountPath: /dev/nvidia-uvm
+          name: nvidia-uvm
+        - mountPath: /usr/local/nvidia/bin
+          name: bin
+        - mountPath: /usr/lib/nvidia
+          name: lib
+        - mountPath: /usr/lib/cuda
+          name: libcuda
+        {{ end }}
+        - name: {{ .Values.storage.name }}
+          mountPath: /var/tensorflow
+      volumes:
+      - name: {{ .Values.storage.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.name }}
+      {{ if $isGpu }}
+        {{ range $j, $f := until (int $nbGpu) | default 1 }}
+      - name: nvidia{{ $j }}
+        hostPath: 
+          path: /dev/nvidia{{ $j }}
+        {{ end }}
+      - name: nvidiactl
+        hostPath: 
+          path: /dev/nvidiactl
+      - name: nvidia-uvm
+        hostPath: 
+          path: /dev/nvidia-uvm
+      - name: bin
+        hostPath: 
+          path: /usr/lib/nvidia-375/bin
+      - name: lib
+        hostPath: 
+          path: /usr/lib/nvidia-375
+      - name: libcuda
+        hostPath: 
+          path: /usr/lib/x86_64-linux-gnu
+      {{ end }}
+---

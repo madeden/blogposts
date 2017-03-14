@@ -1,0 +1,64 @@
+global:
+  imagePullPolicy: IfNotPresent
+  services:
+    aws:
+      region: us-east-1
+      efs:
+        id: fs-47cd610e
+
+storage:
+  name: tensorflow-fs
+  accessMode: ReadWriteMany
+  pv: 
+    capacity: "900Gi"
+  pvc:
+    name: tensorboard-fs
+    request: "750Gi"
+
+dataImport:
+  service:
+    name: load-data
+  settings:
+    url: https://storage.googleapis.com/oscon-tf-workshop-materials/processed_reddit_data/news_aww/prepared_data.tar.gz
+  image: 
+    repo: gcr.io/google-samples
+    name: tf-workshop
+    dockerTag: v2
+
+tensorboard:
+  replicaCount: 1
+  image: 
+    repo: gcr.io/tensorflow
+    name: tensorflow
+    dockerTag: 1.0.0
+  service:
+    name: tensorboard
+    dns: tensorboard.madeden.net
+    type: ClusterIP
+    externalPort: 6006
+    internalPort: 6006
+    command: '["tensorboard", "--logdir", "/var/tensorflow/output"]'
+  settings:
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1Gi
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+
+tfCluster:
+  service:
+    name: tensorflow-cluster
+    internalPort: 8080
+    externalPort: 8080
+    type: ClusterIP
+  image: 
+    repo: gcr.io/google-samples
+    name: tf-worker-example
+    dockerTag: latest
+  settings:
+    isGpu: false
+    jobs: 
+      ps: 8
+      worker: 16

@@ -1,0 +1,46 @@
+# Serving Deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Values.serving.service.name | trunc 24 }}
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{.Values.serving.service.name | trunc 24 }}
+    heritage: {{.Release.Service | quote }}
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    release: {{.Release.Name | quote }}
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: {{.Values.serving.replicaCount}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.serving.service.name | trunc 24 }}
+    spec:
+      containers:
+      - name: {{.Values.serving.service.name | trunc 24 }}
+        resources:
+{{ toYaml .Values.serving.resources | indent 12 }}
+        image: {{.Values.serving.image.repo}}/{{.Values.serving.image.name}}:{{.Values.serving.image.dockerTag}}
+        imagePullPolicy: {{.Values.global.imagePullPolicy}}
+        command: {{.Values.serving.service.command}}
+        env:
+        - name: PORT
+          value: {{ .Values.serving.service.internalPort | quote }}
+        - name: MODEL_PATH
+          value: /var/tensorflow/{{ .Values.serving.settings.dataset }}-checkpoints
+        - name: BATCHING
+          value: "--enable_batching"
+        ports:
+        - name: serving
+          containerPort: {{ .Values.serving.service.internalPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: {{ .Values.storage.name }}
+          mountPath: /var/tensorflow
+      volumes:
+      - name: {{ .Values.storage.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.name }}
+

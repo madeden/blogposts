@@ -1,0 +1,67 @@
+global:
+  imagePullPolicy: IfNotPresent
+  services:
+    aws:
+      region: us-east-1
+      az: us-east-1a
+      efs:
+        id: fs-47cd610e
+
+storage:
+  name: tensorflow-fs
+  accessMode: ReadWriteMany
+  pv: 
+    capacity: "900Gi"
+  pvc:
+    name: tensorboard-fs
+    request: "500Gi"
+
+dataLoader:
+  service:
+    name: load-data
+    command: '[ "/entrypoint.sh" ]'
+  settings:
+    imagenetUsername: foo
+    imagenetApiKey: bar
+  image: 
+    repo: samnco
+    name: tf-models
+    dockerTag: dl-1.0.0
+
+tensorboard:
+  replicaCount: 1
+  image: 
+    repo: gcr.io/tensorflow
+    name: tensorflow
+    dockerTag: 1.0.0
+  service:
+    name: tensorboard
+    dns: tensorboard.madeden.net
+    type: ClusterIP
+    externalPort: 6006
+    internalPort: 6006
+    command: '["tensorboard", "--logdir", "/var/tensorflow/imagenet-eval"]'
+  settings:
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1Gi
+    limits:
+      cpu: 4000m
+      memory: 4Gi
+
+tfCluster:
+  service:
+    name: tensorflow-cluster
+    internalPort: 8080
+    externalPort: 8080
+    type: ClusterIP
+  image: 
+    repo: gcr.io/google-samples
+    name: tf-worker-example
+    dockerTag: latest
+  settings:
+    isGpu: true
+    jobs: 
+      ps: 8
+      worker: 16

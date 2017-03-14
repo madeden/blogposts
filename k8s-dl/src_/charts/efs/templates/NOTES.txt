@@ -1,0 +1,1 @@
+This chart has created a PV and a PVc to host the common data for your model, connected to an EFS volume. 
