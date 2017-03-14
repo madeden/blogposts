@@ -5,3 +5,5 @@ bazel-0.2.0-ppc-protobuf-linux_ppc64le filter=lfs diff=lfs merge=lfs -text
 k8s-on-ppc64le/resources/bazel-0.2.0-ppc-protobuf-linux_ppc64le filter=lfs diff=lfs merge=lfs -text
 k8s-dl/src_/docker/tf-models/bin/bazel-real filter=lfs diff=lfs merge=lfs -text
 k8s-dl/src_/docker/tf-models/bin/bazel filter=lfs diff=lfs merge=lfs -text
+k8s-dl/src/docker/tf-models/bin/bazel-real filter=lfs diff=lfs merge=lfs -text
+k8s-dl/src/docker/tf-models/bin/bazel filter=lfs diff=lfs merge=lfs -text
