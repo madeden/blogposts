@@ -1,0 +1,14 @@
+# Default values for transcoder.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+parallelism: 3
+type: aws
+source: sintel_trailer-1080p.mp4
+resources:
+  requests:
+    cpu: "2"
+    memory: 2Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+

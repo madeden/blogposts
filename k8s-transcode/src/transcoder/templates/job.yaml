@@ -1,0 +1,61 @@
+{{- $type := .Values.type -}}
+{{- $parallelism := .Values.parallelism -}}
+{{- $cpu := .Values.resources.requests.cpu -}}
+{{- $memory := .Values.resources.requests.memory -}}
+{{- $maxCpu := .Values.resources.max.cpu -}}
+{{- $requests := .Values.resources.requests -}}
+{{- $multiSrc := .Values.multiSource -}}
+{{- $src := .Values.defaultSource -}}
+{{- $burst := .Values.burst -}}
+
+---
+{{- range $job, $nb := until (int .Values.parallelism) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $type | lower }}-{{ $parallelism }}-{{ $cpu | lower }}-{{ $memory | lower }}-{{ $job }}
+spec:
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        role: transcoder
+    spec:
+      containers:
+      - name: transcoder-{{ $job }}
+        image: jrottenberg/ffmpeg:ubuntu
+        args: [
+          "-y",
+          "-i", "/data/{{ if $multiSrc }}source{{ add 1 (mod 23 (add 1 (mod $parallelism (add $job 1)))) }}.mp4{{ else }}{{ $src }}{{ end }}",
+          "-stats",
+          "-c:v",
+          "libx264",
+          "-s", "1920x1080",
+          "-crf", "22",
+          "-profile:v", "main",
+          "-pix_fmt", "yuv420p",
+          "-threads", "0",
+          "-f", "mp4",
+          "-ac", "2",
+          "-c:a", "aac",
+          "-b:a", "128k",
+          "-strict", "-2",
+          "/data/output-{{ $job }}.mp4"
+        ]
+        volumeMounts:
+          - mountPath: /data
+            name: hostpath
+        resources:
+          requests: 
+{{ toYaml $requests | indent 12 }}
+          limits:
+            # cpu: {{ if $burst }}{{ max (mul 2 (atoi $cpu)) (atoi $maxCpu) | quote }}{{ else }}{{ $cpu }}{{ end }}
+            cpu: {{ if $burst }}{{  max (atoi $cpu) (atoi $maxCpu) }}{{ else }}{{ $cpu }}{{ end }}
+            memory: {{ $memory }}
+      restartPolicy: Never
+      volumes:
+        - name: hostpath
+          hostPath:
+            path: /mnt
+---
+{{- end }}

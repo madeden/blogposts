@@ -1,0 +1,17 @@
+# Number of // tasks
+parallelism: PARALLELISM
+# Separator name
+type: TYPE
+# Do we want several input files
+# if yes, the chart will use source${i}.mp4 with up to 24 sources
+multiSource: MULTISOURCE
+# If not multi source, name of the default file
+defaultSource: sintel_trailer-1080p.mp4
+# Do we want to burst. If yes, resource limit will double request. 
+burst: BURST
+resources:
+  requests:
+    cpu: "CPU"
+    memory: MEMORYGi
+  max:
+    cpu: "MAX_CPU"

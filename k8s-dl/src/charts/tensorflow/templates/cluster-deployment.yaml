@@ -85,9 +85,7 @@ spec:
         - name: GRPC_VERBOSITY
           value: DEBUG
         - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
+          value: {{ $job }}-{{ $i }}
         - name: CLUSTER_CONFIG
           valueFrom:
             configMapKeyRef:

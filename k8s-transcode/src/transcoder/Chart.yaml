@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Running concurrent transcoding jobs in k8s
+name: transcoder
+version: 0.2.0

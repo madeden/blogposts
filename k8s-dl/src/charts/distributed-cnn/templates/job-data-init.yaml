@@ -1,32 +1,32 @@
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: {{.Values.dataImport.service.name | trunc 24 }}
-  namespace: {{.Release.Namespace}}
-  labels:
-    heritage: {{.Release.Service | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    release: {{.Release.Name | quote }}
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
-spec:
-  template:
-    metadata:
-      name: {{.Values.dataImport.service.name | trunc 24 }}
-    spec:
-      restartPolicy: Never
-      containers:
-      - name: {{.Values.dataImport.service.name | trunc 24 }}
-        image: {{.Values.dataImport.image.repo}}/{{.Values.dataImport.image.name}}:{{.Values.dataImport.image.dockerTag}}
-        command:
-        - "/bin/sh"
-        - "-c"
-        args:
-        - "curl {{.Values.dataImport.settings.url}} | tar xzv -C /var/tensorflow/"
-        volumeMounts:
-        - name: {{ .Values.storage.name }}
-          mountPath: /var/tensorflow
-      volumes:
-      - name: {{ .Values.storage.name }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.storage.name }}
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: {{.Values.dataImport.service.name | trunc 24 }}
+#   namespace: {{.Release.Namespace}}
+#   labels:
+#     heritage: {{.Release.Service | quote }}
+#     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+#     release: {{.Release.Name | quote }}
+#   annotations:
+#     "helm.sh/created": {{.Release.Time.Seconds | quote }}
+# spec:
+#   template:
+#     metadata:
+#       name: {{.Values.dataImport.service.name | trunc 24 }}
+#     spec:
+#       restartPolicy: Never
+#       containers:
+#       - name: {{.Values.dataImport.service.name | trunc 24 }}
+#         image: {{.Values.dataImport.image.repo}}/{{.Values.dataImport.image.name}}:{{.Values.dataImport.image.dockerTag}}
+#         command:
+#         - "/bin/sh"
+#         - "-c"
+#         args:
+#         - "curl {{.Values.dataImport.settings.url}} | tar xzv -C /var/tensorflow/"
+#         volumeMounts:
+#         - name: {{ .Values.storage.name }}
+#           mountPath: /var/tensorflow
+#       volumes:
+#       - name: {{ .Values.storage.name }}
+#         persistentVolumeClaim:
+#           claimName: {{ .Values.storage.name }}

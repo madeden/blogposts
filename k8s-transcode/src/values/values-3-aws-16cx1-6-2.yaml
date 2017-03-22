@@ -1,0 +1,17 @@
+# Number of // tasks
+parallelism: 3
+# Separator name
+type: aws-16cx1
+# Do we want several input files
+# if yes, the chart will use source${i}.mp4 with up to 24 sources
+multiSource: false
+# If not multi source, name of the default file
+defaultSource: sintel_trailer-1080p.mp4
+# Do we want to burst. If yes, resource limit will double request. 
+burst: true
+resources:
+  requests:
+    cpu: "6"
+    memory: 2Gi
+  max:
+    cpu: "16"

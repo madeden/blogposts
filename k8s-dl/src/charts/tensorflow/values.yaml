@@ -29,6 +29,8 @@ tfCluster:
     dockerTagCpu: train-0.11-0.0.8
     dockerTagGpu: train-0.11-gpu-0.0.8
     # dockerTagGpu: train-0.11-0.0.8
+    # dockerTagCpu: train-0.9-1
+    # dockerTagGpu: train-0.9-gpu-1
   settings:
     dataset: imagenet
     isGpu: true
@@ -52,6 +54,8 @@ evaluating:
     name: tf-models
     dockerTagCpu: train-0.11-0.0.8
     dockerTagGpu: train-0.11-gpu-0.0.8
+    # dockerTagCpu: train-0.9-1
+    # dockerTagGpu: train-0.9-gpu-1
   service:
     name: eval
     command: '[ "/eval.sh" ]'
