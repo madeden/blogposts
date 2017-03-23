@@ -36,7 +36,7 @@ Let's see!
 
 In this blog post, we will do the following: 
 
-1. Setup various Kubernetes clusters: pure bare metal, pure cloud, in LXD containers with strict CPU allocation. Make sure they can run privileged containers (to share hostpath)
+1. Setup various Kubernetes clusters: pure bare metal, pure cloud, in LXD containers with strict CPU allocation. 
 2. Design a minimalistic Helm chart to easily create some parallelism
 3. Run benchmarks to scale concurrency (up to 32 threads/node)
 4. Extract and process logs from these runs to see how concurrency impacts performance per core
