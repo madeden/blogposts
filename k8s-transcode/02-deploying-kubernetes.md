@@ -49,7 +49,7 @@ This deploys the whole thing and you need to wait until it's done for the next s
 The adjust the LXD profile for each LXD node must to allow nested containers. In a near future (roadmapped for 2.3), Juju will gain the ability to declare the profiles it wants to use for LXD hosts. But for now, we need to build that manually: 
 
 ```
-NB_CORES_PER_LXD=4 #This is the same number used above to deploy
+NB_CORES_PER_LXD=6 #This is the same number used above to deploy
 for MACHINE in $(seq 1 1 2)
 do
   ./src/bin/setup-worker.sh ${MACHINE} ${NB_CORES_PER_LXD}

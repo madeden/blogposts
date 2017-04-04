@@ -43,12 +43,13 @@ So here is what we do:
 1. Collect the list of logs on each host: 
 
 ```
+ENVIRONMENT=bm56
 for i in $(seq 0 1 1); do 
-  [ -d logs/aws/node0${i} ] || mkdir -p logs/aws/node0${i}
+  [ -d logs/${ENVIRONMENT}/node0${i} ] || mkdir -p logs/${ENVIRONMENT}/node0${i}
   juju ssh kubernetes-worker-cpu/${i} "ls /var/log/containers | grep -v POD | grep -v 'kube-system'" > logs/aws/node0${i}/links.txt
   juju ssh kubernetes-worker-cpu/${i} "sudo tar cfz logs.tgz /var/lib/docker/containers"
   juju scp kubernetes-worker-cpu/${i}:logs.tgz logs/aws/node0${i}/
-  cd logs/aws/node0${i}/
+  cd logs/${ENVIRONMENT}/node0${i}/
   tar xfz logs.tgz --strip-components=5 -C ./
   rm -rf config.v2.json host* resolv.conf* logs.tgz var shm
   cd ../../..
@@ -70,7 +71,7 @@ do
 
     NODE="node0${node}"
     CSV_LINE="$(echo ${line} | head -c-6 | tr '-' ',')"
-    UUID="$(echo ${CSV_LINE} | cut -f9 -d',')"
+    UUID="$(echo ${CSV_LINE} | cut -f8 -d',')"
     JSON="$(sed -ne '1p' -ne '13p' -ne '82p' ${UUID}-json.log)"
     TIME_IN="$(echo $JSON | jq --raw-output '.time' | head -n1 | xargs -I {} date --date='{}' +%s)"
     TIME_OUT="$(echo $JSON | jq --raw-output '.time' | tail -n1 | xargs -I {} date --date='{}' +%s)"

@@ -7,7 +7,7 @@ In order to manage EFS, you will need:
 * the VPC you run into. Juju uses the default VPC by default, so you can look that up in AWS GUI, or if you did not deploy more VPCs with
 
 ```
-VPC_ID=$(aws --region us-east-1 ec2 describe-vpcs \
+VPC_ID=$(aws --profile canonical --region us-east-1 ec2 describe-vpcs \
     | jq --raw-output '.[][].VpcId')
 # vpc-b4ce2bd1
 ```
@@ -15,7 +15,7 @@ VPC_ID=$(aws --region us-east-1 ec2 describe-vpcs \
 * All subnets you have instances deployed in
 
 ```
-SUBNET_IDS=$(aws --region us-east-1 ec2 describe-subnets \
+SUBNET_IDS=$(aws --profile canonical --region us-east-1 ec2 describe-subnets \
     | jq --raw-output '.[][].SubnetId')
 # subnet-26300e52
 # subnet-418dea7b
@@ -26,11 +26,8 @@ SUBNET_IDS=$(aws --region us-east-1 ec2 describe-subnets \
 * The security group to allow access from
 
 ```
-SG_ID=$(aws --region us-east-1 ec2 describe-instances \
-    | jq --raw-output '.[][].Instances[] \
-        | select( .Tags[].Value \
-        | contains ("juju-default-machine-0")) \
-        | .SecurityGroups[1].GroupId')
+SG_ID=$(aws --profile canonical --region us-east-1 ec2 describe-instances \
+    | jq --raw-output '.[][].Instances[] | select( .Tags[].Value  | contains ("juju-k8s-machine-0")) | .SecurityGroups[1].GroupId')
 # sg-bc4101c0
 ```
 
@@ -41,8 +38,8 @@ As a result, straight after a deployment, each Juju machine will only have 2 SGs
 ## Creation of the EFS 
 
 ```
-EFS_ID=$(aws canonical --region us-east-1 efs create-file-system --creation-token $(uuid) \
-    | jq --raw-values '.FileSystemId'
+EFS_ID=$(aws --profile canonical --region us-east-1 efs create-file-system --creation-token $(uuid) \
+    | jq --raw-output '.FileSystemId')
 # fs-69de7c20
 # Note the full output: 
 # {
@@ -64,7 +61,7 @@ Now you need to create mount points for each of the subnets you have instances i
 ```
 for subnet in ${SUBNET_IDS}
 do 
-    aws --region us-east-1 efs create-mount-target \
+    aws --profile canonical --region us-east-1 efs create-mount-target \
         --file-system-id ${EFS_ID} \
         --subnet-id ${subnet} \
         --security-groups ${SG_ID}

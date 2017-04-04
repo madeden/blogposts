@@ -40,11 +40,11 @@ This can be done with
 ```
 for WORKER_TYPE in gpu gpu8
 do
-    juju show-status kubernetes-worker-${WORKER_TYPE} --format json | \
+    juju status kubernetes-worker-${WORKER_TYPE} --format json | \
         jq --raw-output '.applications."kubernetes-worker-'${WORKER_TYPE}'".units | keys[]' | \
         xargs -I UNIT juju ssh UNIT "echo -e '\n# Security Context \nKUBE_ALLOW_PRIV=\"--allow-privileged=true\"' | sudo tee -a /etc/default/kubelet" 
 
-juju show-status kubernetes-worker-${WORKER_TYPE} --format json | \
+juju status kubernetes-worker-${WORKER_TYPE} --format json | \
     jq --raw-output '.applications."kubernetes-worker-'${WORKER_TYPE}'".units | keys[]' | \
     xargs -I UNIT juju ssh UNIT "sudo sed -i 's/KUBELET_ARGS=\"/KUBELET_ARGS=\"--experimental-nvidia-gpus=1\ /' /etc/default/kubelet && sudo systemctl restart kubelet.service"
 
