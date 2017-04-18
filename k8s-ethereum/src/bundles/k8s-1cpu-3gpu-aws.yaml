@@ -1,0 +1,115 @@
+series: xenial
+applications: 
+  flannel: 
+    charm: "cs:~containers/flannel-13"
+    annotations: 
+      "gui-x": "943"
+      "gui-y": "943.4101615137754"
+  "kubernetes-master": 
+    charm: "cs:~containers/kubernetes-master-17"
+    num_units: 1
+    options: 
+      "allow-privileged": "auto"
+      channel: 1.6/stable
+      dns_domain: "cluster.local"
+      "enable-dashboard-addons": "true"
+      "service-cidr": "10.152.183.0/24"
+    expose: true
+    annotations: 
+      "gui-x": "1543"
+      "gui-y": "597"
+    to: 
+      - "0"
+  etcd: 
+    charm: "cs:~containers/etcd-29"
+    num_units: 1
+    annotations: 
+      "gui-x": "1343"
+      "gui-y": "250.58983848622455"
+    to: 
+      - "0"
+  easyrsa: 
+    charm: "cs:~containers/easyrsa-8"
+    num_units: 1
+    annotations: 
+      "gui-x": "943"
+      "gui-y": "250.58983848622455"
+    to: 
+      - "lxd:kubernetes-master/0"
+  "kubernetes-worker-cpu": 
+    charm: "cs:~containers/kubernetes-worker-22"
+    num_units: 1
+    options: 
+      "allow-privileged": "auto"
+      channel: 1.6/stable
+      ingress: "true"
+      labels: "hasGpu=false"
+    expose: true
+    annotations: 
+      "gui-x": "743"
+      "gui-y": "597"
+    to: 
+      - "1"
+  "kubernetes-worker-gpu": 
+    charm: "cs:~containers/kubernetes-worker-22"
+    num_units: 3
+    options: 
+      "allow-privileged": "auto"
+      channel: 1.6/stable
+      ingress: "true"
+      labels: "hasGpu=true"
+    expose: true
+    annotations: 
+      "gui-x": "743"
+      "gui-y": "597"
+    to: 
+      - "2"
+      - "3"
+      - "4"
+relations: 
+  - - "kubernetes-master:cluster-dns"
+    - "kubernetes-worker-cpu:kube-dns"
+  - - "kubernetes-master:kube-control"
+    - "kubernetes-worker-cpu:kube-control"
+  - - "flannel:cni"
+    - "kubernetes-worker-cpu:cni"
+  - - "kubernetes-worker-cpu:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-worker-cpu:kube-api-endpoint"
+    - "kubernetes-master:kube-api-endpoint"
+  - - "kubernetes-master:cluster-dns"
+    - "kubernetes-worker-gpu:kube-dns"
+  - - "kubernetes-master:kube-control"
+    - "kubernetes-worker-gpu:kube-control"
+  - - "flannel:cni"
+    - "kubernetes-worker-gpu:cni"
+  - - "kubernetes-worker-gpu:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-worker-gpu:kube-api-endpoint"
+    - "kubernetes-master:kube-api-endpoint"
+  - - "kubernetes-master:certificates"
+    - "easyrsa:client"
+  - - "etcd:certificates"
+    - "easyrsa:client"
+  - - "kubernetes-master:etcd"
+    - "etcd:db"
+  - - "flannel:etcd"
+    - "etcd:db"
+  - - "flannel:cni"
+    - "kubernetes-master:cni"
+machines: 
+  "0": 
+    series: xenial
+    constraints: "arch=amd64 cpu-cores=4 cpu-power=1679 mem=16384 root-disk=32768"
+  "1": 
+    series: xenial
+    constraints: "instance-type=m4.xlarge root-disk=65536"
+  "2": 
+    series: xenial
+    constraints: "instance-type=p2.xlarge root-disk=65536"
+  "3": 
+    series: xenial
+    constraints: "instance-type=p2.xlarge root-disk=65536"
+  "4": 
+    series: xenial
+    constraints: "instance-type=p2.xlarge root-disk=65536"

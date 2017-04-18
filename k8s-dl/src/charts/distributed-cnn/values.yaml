@@ -60,5 +60,5 @@ tfCluster:
   settings:
     isGpu: false
     jobs: 
-      ps: 8
-      worker: 16
+      ps: 4
+      worker: 8
