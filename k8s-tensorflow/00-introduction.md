@@ -8,12 +8,14 @@ The wide audience it reached also led me to conclude that I should probably revi
 
 So today, we will:
 
-1. Deploy a GPU enabled Kubernetes cluster, made of 1 CPU node and 3 GPU-enabled nodes. 
+1. Deploy a GPU enabled Kubernetes cluster, made of 1 CPU node and 3 GPU-enabled nodes.
 2. Add Storage to the cluster, via EFS
-3. Deploy a Tensorflow workload
-4. Look how you can use this for your own tensorflow
+3. Deploy a Tensorflow workload using Helm
+4. Learn how you can adapt this for your own Tensorflow code
 
-For the sake of clarity, this is an updated, condensed version of [links to former posts] that benefits from the latest and greatest additions to the Canonical Distribution of Kubernetes. 
+
+For the sake of clarity, there is nothing new here, it is an updated, condensed version of my series about Tensorflow on Kubernetes Part 1, Part 2 and Part 3 that benefits from the latest and greatest additions to the Canonical Distribution of Kubernetes.
+
 
 # Requirements
 
