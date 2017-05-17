@@ -1,12 +1,12 @@
 series: xenial
 applications: 
   flannel: 
-    charm: "cs:~containers/flannel-13"
+    charm: "cs:~containers/flannel-15"
     annotations: 
       "gui-x": "943"
       "gui-y": "943.4101615137754"
   "kubernetes-master": 
-    charm: "cs:~containers/kubernetes-master-17"
+    charm: "cs:~containers/kubernetes-master-19"
     num_units: 1
     options: 
       "allow-privileged": "auto"
@@ -21,7 +21,7 @@ applications:
     to: 
       - "0"
   etcd: 
-    charm: "cs:~containers/etcd-29"
+    charm: "cs:~containers/etcd-30"
     num_units: 1
     annotations: 
       "gui-x": "1343"
@@ -37,7 +37,7 @@ applications:
     to: 
       - "lxd:kubernetes-master/0"
   "kubernetes-worker-cpu": 
-    charm: "cs:~containers/kubernetes-worker-22"
+    charm: "cs:~containers/kubernetes-worker-23"
     num_units: 1
     options: 
       "allow-privileged": "auto"
@@ -51,7 +51,7 @@ applications:
     to: 
       - "1"
   "kubernetes-worker-gpu": 
-    charm: "cs:~containers/kubernetes-worker-22"
+    charm: "cs:~containers/kubernetes-worker-23"
     num_units: 3
     options: 
       "allow-privileged": "auto"
