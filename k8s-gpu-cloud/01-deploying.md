@@ -39,27 +39,27 @@ At deployment time, you can give constraints to Juju, either very specific (inst
 First thing is to deploy the applications: 
 
 ```
-juju deploy cs:~containers/kubernetes-master-11 --constraints "cores=4 mem=8G root-disk=32G"
-# Located charm "cs:~containers/kubernetes-master-11".
-# Deploying charm "cs:~containers/kubernetes-master-11".
-juju deploy cs:~containers/etcd-23 --to 0
-# Located charm "cs:~containers/etcd-23".
-# Deploying charm "cs:~containers/etcd-23".
-juju deploy cs:~containers/easyrsa-6 --to lxd:0
-# Located charm "cs:~containers/easyrsa-6".
-# Deploying charm "cs:~containers/easyrsa-6".
-juju deploy cs:~containers/flannel-10
-# Located charm "cs:~containers/flannel-10".
-# Deploying charm "cs:~containers/flannel-10".
-juju deploy cs:~containers/kubernetes-worker-13 --constraints "instance-type=p2.xlarge" kubernetes-worker-gpu
-# Located charm "cs:~containers/kubernetes-worker-13".
-# Deploying charm "cs:~containers/kubernetes-worker-13".
-juju deploy cs:~containers/kubernetes-worker-13 --constraints "instance-type=p2.8xlarge" kubernetes-worker-gpu8
-# Located charm "cs:~containers/kubernetes-worker-13".
-# Deploying charm "cs:~containers/kubernetes-worker-13".
-juju deploy cs:~containers/kubernetes-worker-13 --constraints "instance-type=m4.2xlarge" -n3 kubernetes-worker-cpu
-# Located charm "cs:~containers/kubernetes-worker-13".
-# Deploying charm "cs:~containers/kubernetes-worker-13".
+juju deploy cs:~containers/kubernetes-master-47 --constraints "cores=4 mem=8G root-disk=32G"
+# Located charm "cs:~containers/kubernetes-master-47".
+# Deploying charm "cs:~containers/kubernetes-master-47".
+juju deploy cs:~containers/etcd-48 --to 0
+# Located charm "cs:~containers/etcd-48".
+# Deploying charm "cs:~containers/etcd-48".
+juju deploy cs:~containers/easyrsa-15 --to lxd:0
+# Located charm "cs:~containers/easyrsa-15".
+# Deploying charm "cs:~containers/easyrsa-15".
+juju deploy cs:~containers/flannel-26
+# Located charm "cs:~containers/flannel-26".
+# Deploying charm "cs:~containers/flannel-26".
+juju deploy cs:~containers/kubernetes-worker-52 --constraints "instance-type=p2.xlarge" kubernetes-worker-gpu
+# Located charm "cs:~containers/kubernetes-worker-52".
+# Deploying charm "cs:~containers/kubernetes-worker-52".
+juju deploy cs:~containers/kubernetes-worker-52 --constraints "instance-type=p2.8xlarge" kubernetes-worker-gpu8
+# Located charm "cs:~containers/kubernetes-worker-52".
+# Deploying charm "cs:~containers/kubernetes-worker-52".
+juju deploy cs:~containers/kubernetes-worker-52 --constraints "instance-type=m4.2xlarge" -n3 kubernetes-worker-cpu
+# Located charm "cs:~containers/kubernetes-worker-52".
+# Deploying charm "cs:~containers/kubernetes-worker-52".
 ```
 
 Here you can see an interesting property in Juju that we never approached before: naming the services you deploy. We deployed the same kubernetes-worker charm twice, but twice with GPUs and the other without. This gives us a way to group instances of a certain type, at the cost of duplicating some commands. 
@@ -87,7 +87,7 @@ juju add-relation flannel:cni kubernetes-master:cni
 for TYPE in cpu gpu gpu8
 do 
   juju add-relation kubernetes-worker-${TYPE}:kube-api-endpoint kubernetes-master:kube-api-endpoint
-  juju add-relation kubernetes-master:cluster-dns kubernetes-worker-${TYPE}:kube-dns
+  juju add-relation kubernetes-master:kube-control kubernetes-worker-${TYPE}:kube-control
   juju add-relation kubernetes-worker-${TYPE}:certificates easyrsa:client
   juju add-relation flannel:cni kubernetes-worker-${TYPE}:cni
   juju expose kubernetes-worker-${TYPE}
@@ -100,38 +100,24 @@ Note at the end the "expose" commands. These are instructions for Juju to open u
 
 ## Adding CUDA
 
-CUDA does not have an official charm yet (coming up very soon!!), but there is my demoware implementation which you can find on [GitHub](https://github.com/SaMnCo/layer-nvidia-cuda)
+Discovery and installation of CUDA is now a fully automated process. Every 5 minutes, the charms will check if nVidia GPUs are present and if so, install drivers and CUDA. 
 
-Make sure you have the charm tools available, clone and build the CUDA charm: 
+2 options help controlling the behavior in the worker charm : 
 
-```
-sudo apt install charm charm-tools
+<pre><code>
+  "cuda-version":
+    "type": "string"
+    "default": "8.0.61-1"
+    "description": |
+      The cuda-repo package version to install.
+  "install-cuda":
+    "type": "boolean"
+    "default": !!bool "true"
+    "description": |
+      Install the CUDA binaries if capable hardware is present.
+</code></pre>
 
-# Exporting the ENV
-mkdir -p ~/charms ~/charms/layers ~/charms/interfaces
-export JUJU_REPOSITORY=${HOME}/charms
-export LAYER_PATH=${JUJU_REPOSITORY}/layers
-export INTERFACE_PATH=${JUJU_REPOSITORY}/interfaces
-
-# Build the charm
-cd ${LAYER_PATH}
-git clone https://github.com/SaMnCo/layer-nvidia-cuda cuda
-charm build cuda
-```
-
-This will create a new folder called **builds** JUJU_REPOSITORY, and another called **cuda** in there. 
-
-Now you can deploy the charm 
-
-```
-juju deploy --series xenial $HOME/charms/builds/cuda
-juju add-relation cuda kubernetes-worker-gpu
-juju add-relation cuda kubernetes-worker-gpu8
-```
-
-This will take a fair amount of time as CUDA is very long to install (CDK takes about 10min and just CUDA probably 15min). 
-
-Nevertheless, at the end the status should show: 
+El despliegue y configuración de CUDA aparecen en el estatus de Juju y los logs. 
 
 ```
 juju status
@@ -139,14 +125,13 @@ Model    Controller     Cloud/Region   Version
 default  aws-us-east-1  aws/us-east-1  2.1-rc1
 
 App                     Version  Status       Scale  Charm              Store       Rev  OS      Notes
-cuda                             active           2  cuda               local         2  ubuntu  
-easyrsa                 3.0.1    active           1  easyrsa            jujucharms    6  ubuntu  
-etcd                    2.2.5    active           1  etcd               jujucharms   23  ubuntu  
-flannel                 0.7.0    active           6  flannel            jujucharms   10  ubuntu  
-kubernetes-master       1.5.2    active           1  kubernetes-master  jujucharms   11  ubuntu  exposed
-kubernetes-worker-cpu   1.5.2    active           3  kubernetes-worker  jujucharms   13  ubuntu  exposed
-kubernetes-worker-gpu   1.5.2    active           1  kubernetes-worker  jujucharms   13  ubuntu  exposed
-kubernetes-worker-gpu8  1.5.2    active           1  kubernetes-worker  jujucharms   13  ubuntu  exposed
+easyrsa                 3.0.1    active           1  easyrsa            jujucharms   15  ubuntu  
+etcd                    2.3.8    active           1  etcd               jujucharms   48  ubuntu  
+flannel                 0.7.0    active           6  flannel            jujucharms   26  ubuntu  
+kubernetes-master       1.7.4    active           1  kubernetes-master  jujucharms   47  ubuntu  exposed
+kubernetes-worker-cpu   1.7.4    active           3  kubernetes-worker  jujucharms   52  ubuntu  exposed
+kubernetes-worker-gpu   1.7.4    active           1  kubernetes-worker  jujucharms   52  ubuntu  exposed
+kubernetes-worker-gpu8  1.7.4    active           1  kubernetes-worker  jujucharms   52  ubuntu  exposed
 
 Unit                       Workload     Agent      Machine  Public address  Ports           Message
 easyrsa/0*                 active       idle       0/lxd/0  10.0.0.122                      Certificate Authority connected.
@@ -160,10 +145,8 @@ kubernetes-worker-cpu/1*   active       idle       5        52.70.5.49      80/t
 kubernetes-worker-cpu/2    active       idle       6        174.129.164.95  80/tcp,443/tcp  Kubernetes worker running.
   flannel/3                active       idle                174.129.164.95                  Flannel subnet 10.1.22.1/24
 kubernetes-worker-gpu8/0*  active       idle       3        52.90.163.167   80/tcp,443/tcp  Kubernetes worker running.
-  cuda/1                   active       idle                52.90.163.167                   CUDA installed and available
   flannel/5                active       idle                52.90.163.167                   Flannel subnet 10.1.35.1/24
 kubernetes-worker-gpu/0*   active       idle       1        52.90.29.98     80/tcp,443/tcp  Kubernetes worker running.
-  cuda/0*                  active       idle                52.90.29.98                     CUDA installed and available
   flannel/1                active       idle                52.90.29.98                     Flannel subnet 10.1.58.1/24
 
 Machine  State    DNS             Inst id              Series  AZ
@@ -176,8 +159,6 @@ Machine  State    DNS             Inst id              Series  AZ
 6        started  174.129.164.95  i-0a0718343068a5c94  xenial  us-east-1c
 
 Relation      Provides                Consumes                Type
-juju-info     cuda                    kubernetes-worker-gpu   regular
-juju-info     cuda                    kubernetes-worker-gpu8  regular
 certificates  easyrsa                 etcd                    regular
 certificates  easyrsa                 kubernetes-master       regular
 certificates  easyrsa                 kubernetes-worker-cpu   regular

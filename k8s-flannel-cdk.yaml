@@ -1,0 +1,101 @@
+series: xenial
+machines:
+  '0':
+    series: xenial
+    constraints: "tags=virtual"
+  '1':
+    series: xenial
+    constraints: "tags=virtual"
+  '2':
+    series: xenial
+    constraints: "tags=physical"
+  '3':
+    series: xenial
+    constraints: "tags=physical"
+  '4':
+    series: xenial
+    constraints: "tags=physical"
+  '5':
+    series: xenial
+    constraints: "tags=physical"
+  '6':
+    series: xenial
+    constraints: "tags=physical"
+  '7':
+    series: xenial
+    constraints: "tags=physical"
+  '8':
+    series: xenial
+    constraints: "tags=physical"
+applications:
+  kubeapi-load-balancer:
+    annotations:
+      gui-x: '450'
+      gui-y: '250'
+    charm: cs:~containers/kubeapi-load-balancer-11
+    expose: true
+    num_units: 1
+    to:
+      - "0"
+  "kubernetes-worker":
+    charm: "cs:~containers/kubernetes-worker-23"
+    num_units: 3
+    options:
+      "allow-privileged": "auto"
+      channel: 1.6/stable
+      ingress: "true"
+    expose: true
+    annotations:
+      "gui-x": "100"
+      "gui-y": "850"
+    to:
+      - "1"
+      - "2"
+  etcd:
+    charm: "cs:~containers/etcd-34"
+    num_units: 3
+    annotations:
+      "gui-x": "800"
+      "gui-y": "550"
+    to:
+      - "3"
+      - "4"
+      - "5"
+  flannel:
+    charm: "cs:~containers/flannel-15"
+    annotations:
+      "gui-x": "1711.5"
+      "gui-y": "994.4101615137754"
+  easyrsa:
+    charm: "cs:~containers/easyrsa-9"
+    num_units: 1
+    annotations:
+      "gui-x": "450"
+      "gui-y": "550"
+    to:
+      - "lxd:kubernetes-master/0"
+relations:
+- - kubernetes-master:kube-api-endpoint
+  - kubeapi-load-balancer:apiserver
+- - kubernetes-master:loadbalancer
+  - kubeapi-load-balancer:loadbalancer
+- - kubernetes-master:kube-control
+  - kubernetes-worker:kube-control
+- - kubernetes-master:certificates
+  - easyrsa:client
+- - kubernetes-master:etcd
+  - etcd:db
+- - kubernetes-worker:certificates
+  - easyrsa:client
+- - kubernetes-worker:kube-api-endpoint
+  - kubeapi-load-balancer:website
+- - kubeapi-load-balancer:certificates
+  - easyrsa:client
+- - flannel:etcd
+  - etcd:db
+- - flannel:cni
+  - kubernetes-master:cni
+- - flannel:cni
+  - kubernetes-worker:cni
+
+

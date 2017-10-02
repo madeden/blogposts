@@ -1,17 +1,12 @@
 series: xenial
 applications: 
-  cuda: 
-    charm: "local:xenial/cuda-2"
-    annotations: 
-      "gui-x": "911.5"
-      "gui-y": "994.4101615137754"
   "kubernetes-worker-cpu": 
-    charm: "cs:~containers/kubernetes-worker-13"
+    charm: "cs:~containers/kubernetes-worker-52"
     num_units: 3
     options: 
-      "enable-cgroups": falsetrue
-      ingress: truetrue
-      install_from_upstream: falsetrue
+      "enable-cgroups": false
+      ingress: true
+      install_from_upstream: false
     constraints: "instance-type=m4.2xlarge"
     expose: true
     annotations: 
@@ -22,12 +17,12 @@ applications:
       - "4"
       - "5"
   "kubernetes-worker-gpu8": 
-    charm: "cs:~containers/kubernetes-worker-13"
+    charm: "cs:~containers/kubernetes-worker-52"
     num_units: 1
     options: 
-      "enable-cgroups": falsetrue
-      ingress: truetrue
-      install_from_upstream: falsetrue
+      "enable-cgroups": false
+      ingress: true
+      install_from_upstream: false
     constraints: "instance-type=p2.8xlarge"
     expose: true
     annotations: 
@@ -36,12 +31,12 @@ applications:
     to: 
       - "2"
   "kubernetes-worker-gpu": 
-    charm: "cs:~containers/kubernetes-worker-13"
+    charm: "cs:~containers/kubernetes-worker-52"
     num_units: 1
     options: 
-      "enable-cgroups": falsetrue
-      ingress: truetrue
-      install_from_upstream: falsetrue
+      "enable-cgroups": false
+      ingress: true
+      install_from_upstream: false
     constraints: "instance-type=p2.xlarge"
     expose: true
     annotations: 
@@ -50,12 +45,12 @@ applications:
     to: 
       - "1"
   flannel: 
-    charm: "cs:~containers/flannel-10"
+    charm: "cs:~containers/flannel-26"
     annotations: 
       "gui-x": "1711.5"
       "gui-y": "994.4101615137754"
   easyrsa: 
-    charm: "cs:~containers/easyrsa-6"
+    charm: "cs:~containers/easyrsa-15"
     num_units: 1
     annotations: 
       "gui-x": "1311.5"
@@ -63,7 +58,7 @@ applications:
     to: 
       - "lxd:etcd/0"
   etcd: 
-    charm: "cs:~containers/etcd-23"
+    charm: "cs:~containers/etcd-48"
     num_units: 1
     annotations: 
       "gui-x": "911.5"
@@ -71,10 +66,10 @@ applications:
     to: 
       - "0"
   "kubernetes-master": 
-    charm: "cs:~containers/kubernetes-master-11"
+    charm: "cs:~containers/kubernetes-master-47"
     num_units: 1
     options: 
-      "enable-dashboard-addons": truetrue
+      "enable-dashboard-addons": true
     constraints: "cores=4 mem=8192 root-disk=32768"
     expose: true
     annotations: 
@@ -95,24 +90,24 @@ relations:
     - "kubernetes-master:cni"
   - - "kubernetes-worker-gpu:kube-api-endpoint"
     - "kubernetes-master:kube-api-endpoint"
-  - - "kubernetes-master:cluster-dns"
-    - "kubernetes-worker-gpu:kube-dns"
+  - - "kubernetes-master:kube-control"
+    - "kubernetes-worker-gpu:kube-control"
   - - "kubernetes-worker-gpu:certificates"
     - "easyrsa:client"
   - - "flannel:cni"
     - "kubernetes-worker-gpu:cni"
   - - "kubernetes-worker-gpu8:kube-api-endpoint"
     - "kubernetes-master:kube-api-endpoint"
-  - - "kubernetes-master:cluster-dns"
-    - "kubernetes-worker-gpu8:kube-dns"
+  - - "kubernetes-master:kube-control"
+    - "kubernetes-worker-gpu8:kube-control"
   - - "kubernetes-worker-gpu8:certificates"
     - "easyrsa:client"
   - - "flannel:cni"
     - "kubernetes-worker-gpu8:cni"
   - - "kubernetes-worker-cpu:kube-api-endpoint"
     - "kubernetes-master:kube-api-endpoint"
-  - - "kubernetes-master:cluster-dns"
-    - "kubernetes-worker-cpu:kube-dns"
+  - - "kubernetes-master:kube-control"
+    - "kubernetes-worker-cpu:kube-control"
   - - "kubernetes-worker-cpu:certificates"
     - "easyrsa:client"
   - - "flannel:cni"

@@ -1,55 +1,8 @@
 # Adding GPU support in Kubernetes
 
-By default, CDK will not activate GPUs when starting the API server and the Kubelet on workers. We need to do that manually (though updates in the charms could fix that for us if we had a specific relation implementation)
+If CUDA is discovered, CDK will also take action to configure the API server and the Kubelet to welcome GPU workloads. There is nothing to do from an operator perspective. 
 
-## Master Update
-
-On the master node, update **/etc/default/kube-apiserver** to add: 
-
-```
-# Security Context
-KUBE_ALLOW_PRIV="--allow-privileged=true"
-```
-
-before restarting the API Server. This can be done programmatically with: 
-
-```
-juju show-status kubernetes-master --format json | \
-    jq --raw-output '.applications."kubernetes-master".units | keys[]' | \
-    xargs -I UNIT juju ssh UNIT "echo -e '\n# Security Context \nKUBE_ALLOW_PRIV=\"--allow-privileged=true\"' | sudo tee -a /etc/default/kube-apiserver && sudo systemctl restart kube-apiserver.service"
-```
-
-So now the Kube API will accept requests to run privileged containers, which are required for GPU workloads.
-
-## Worker nodes
-
-On every worker, **/etc/default/kubelet** to to add the GPU tag, so it looks like:
-
-```
-# Security Context
-KUBE_ALLOW_PRIV="--allow-privileged=true"
-
-# Add your own!
-KUBELET_ARGS="--experimental-nvidia-gpus=1 --require-kubeconfig --kubeconfig=/srv/kubernetes/config --cluster-dns=10.1.0.10 --cluster-domain=cluster.local"
-```
-
-before restarting the service via
-
-This can be done with
-
-```
-for WORKER_TYPE in gpu gpu8
-do
-    juju status kubernetes-worker-${WORKER_TYPE} --format json | \
-        jq --raw-output '.applications."kubernetes-worker-'${WORKER_TYPE}'".units | keys[]' | \
-        xargs -I UNIT juju ssh UNIT "echo -e '\n# Security Context \nKUBE_ALLOW_PRIV=\"--allow-privileged=true\"' | sudo tee -a /etc/default/kubelet" 
-
-juju status kubernetes-worker-${WORKER_TYPE} --format json | \
-    jq --raw-output '.applications."kubernetes-worker-'${WORKER_TYPE}'".units | keys[]' | \
-    xargs -I UNIT juju ssh UNIT "sudo sed -i 's/KUBELET_ARGS=\"/KUBELET_ARGS=\"--experimental-nvidia-gpus=1\ /' /etc/default/kubelet && sudo systemctl restart kubelet.service"
-
-done
-```
+Also, nodes with GPUs will be labeled in Kubernetes with "cuda=true" in order to allow nodeSelectors. 
 
 # Testing our setup
 

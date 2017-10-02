@@ -32,9 +32,7 @@ For what follows, it is important that:
 On Ubuntu, 
 
 ```
-sudo apt-add-repository ppa:juju/stable
-sudo apt update
-sudo apt install -yqq juju 
+sudo snap install juju --classic 
 ```
 
 for other OSes, lookup the [official docs](https://jujucharms.com/docs/2.0/getting-started-general)

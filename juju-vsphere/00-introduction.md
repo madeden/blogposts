@@ -4,7 +4,7 @@ What I am about to say may seem obvious, but a LOT of people out there are using
 
 Until very recently, it was not so easy. You could do it, but well, you had to spend the time to do some manual tweaks here and there, adjust hostnames... Most of the roadbumps were due to a simple thing: VMWare has always refused to use Cloud Init, the de-facto standard to bootstrap VMs in pretty much any other solution. 
 
-Because this was a common request, the team has spent a fair amount of time improving the UX of Juju for vSphere, and I am pleased to say that it now works pretty well, including activating GPUs to continue our tour of nVidia's goodness !!! 
+The team has spent a fair amount of time improving the UX of Juju for vSphere, and I am pleased to say that it now works pretty well, including activating GPUs to continue our tour of nVidia's goodness !!! 
 
 Let's see what the UX looks like now!
 
@@ -17,7 +17,7 @@ To reproduce this post, you'll need:
 * a VMWare vSphere cluster that 
   * can access Internet (at least proxied) and has at least a public (routable) network for the VMs
   * Has a DNS working for all nodes created (or you'll have some edit to /etc/hosts to do)
-* the will to leave on the edge of the Canyon! (juju 2.2rc1 and edge charms for etcd needed here)
+* the will to leave on the edge: juju 2.2rc1 
 
 and for the files, cloning the repo: 
 
@@ -43,7 +43,7 @@ That's it, really the default setup for everything else: I didn't touch networki
 Once you have vSphere installed, you need to let Juju know about it: 
 
 <pre><code>
-$ juju add-cloud vsphere
+juju add-cloud vsphere
 Cloud Types
   maas
   manual
@@ -66,7 +66,7 @@ You may bootstrap with 'juju bootstrap vsphere'
 Now you need to configure the credentials for this cloud:
 
 <pre><code>
-$ juju add-credential vsphere
+juju add-credential vsphere
 Enter credential name: canonical
 
 Using auth-type "userpass".
