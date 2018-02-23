@@ -1,7 +1,7 @@
   # Kubeless
 ## Intro 
 
-Kubeless is the most recent and maybe less mature of all the frameworks. It advertizes itself as a PoC, so we will not spend a lot of time on it. 
+Kubeless was born a few months ago at Skippbox, since then acquired by Bitnami. It has emerged as a natural fit of the Bitnami "a pipeline for all app stores" strategy. 
 
 On the good side
 

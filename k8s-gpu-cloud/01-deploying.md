@@ -122,7 +122,7 @@ El despliegue y configuración de CUDA aparecen en el estatus de Juju y los logs
 ```
 juju status
 Model    Controller     Cloud/Region   Version
-default  aws-us-east-1  aws/us-east-1  2.1-rc1
+default  aws-us-east-1  aws/us-east-1  2.2.4
 
 App                     Version  Status       Scale  Charm              Store       Rev  OS      Notes
 easyrsa                 3.0.1    active           1  easyrsa            jujucharms   15  ubuntu  

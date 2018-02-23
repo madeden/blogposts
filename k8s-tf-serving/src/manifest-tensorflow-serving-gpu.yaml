@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf-serving-gpu
+  namespace: default
+spec:
+  ports:
+  - name: grpc
+    port: 9000
+    targetPort: 9000
+  selector:
+    app: tf-serving-gpu
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tf-serving-gpu
+  labels: 
+    app: tf-serving-gpu
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tf-serving-gpu
+    spec:
+      containers:
+      - image: samnco/tf-serving:gpu
+        name: tf-serving
+        command: ["/entrypoint.sh"]
+        imagePullPolicy: IfNotPresent
+        env: 
+        - name: LD_LIBRARY_PATH
+          value: "$LD_LIBRARY_PATH:/usr/lib/nvidia:/usr/lib/cuda"
+        - name: PORT
+          value: "9000"
+        - name: MODEL_NAME
+          value: "inception"
+        - name: MODEL_PATH
+          value: "/model-data"
+        ports:
+        - containerPort: 9000
+        readinessProbe:
+          tcpSocket:
+            port: 9000
+          timeoutSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 6
+        resources: 
+          requests: 
+            cpu: 200m
+            memory: 2048Mi
+            alpha.kubernetes.io/nvidia-gpu: "1"
+          limits: 
+            cpu: 200m
+            memory: 2048Mi
+            alpha.kubernetes.io/nvidia-gpu: "1"
+        volumeMounts:
+        - mountPath: /model-data
+          name: tf-serving-data
+        - mountPath: /usr/local/nvidia/bin
+          name: bin
+        - mountPath: /usr/lib/nvidia
+          name: lib
+        - mountPath: /usr/lib/cuda
+          name: libcuda
+      restartPolicy: Always
+      nodeSelector: 
+        kubernetes.io/gpu-name: nVidia-Tesla-P4
+      volumes:
+      - name: tf-serving-data
+        hostPath: 
+          path: /model-data
+          type: Directory
+      - hostPath:
+          path: /usr/lib/nvidia-387/bin
+          type: ""
+        name: bin
+      - hostPath:
+          path: /usr/lib/nvidia-387
+          type: ""
+        name: lib
+      - hostPath:
+          path: /usr/lib/x86_64-linux-gnu
+          type: ""
+        name: libcuda
+

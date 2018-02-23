@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf-resizer
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 5051
+    nodePort: 30501
+    targetPort: 5051
+  selector:
+    app: tf-image-resizer
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tf-image-resizer
+  labels: 
+    app: tf-image-resizer
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tf-image-resizer
+    spec:
+      containers:
+      - image: ronhanson/tensorflow-image-resizer:latest
+        name: tf-image-resizer
+        imagePullPolicy: Always
+        env: 
+        - name: TF_SERVERS
+          value: "tf-8cpu:tf-serving-8cpu.default.svc:9000;tf-1cpu:tf-serving-1cpu.default.svc:9000;tf-gpu:tf-serving-gpu.default.svc:9000"
+        ports:
+        - containerPort: 5051
+        readinessProbe:
+          tcpSocket:
+            port: 5051
+          timeoutSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 5051
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 6
+        resources: 
+          requests: 
+            cpu: 100m
+            memory: 1024Mi
+          limits: 
+            cpu: 500m
+            memory: 2048Mi            
+      restartPolicy: Always
+---

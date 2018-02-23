@@ -1,0 +1,13 @@
+{
+  "name": "send-sms",
+  "version": "0.0.1",
+  "description": "Simple Python function to send SMS via Twilio",
+  "dependencies": {
+    "requests": "^2.18.4",
+    "kafka-python": "^1.3.5",
+    "twilio": "^6.8.0"
+  },
+  "main": "handler.py",
+  "autor": "Mad Eden",
+  "license": "Apache-2.0"
+}
