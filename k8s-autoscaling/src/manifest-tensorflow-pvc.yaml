@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-seed
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: "10.152.183.11"
+    path: "/exports"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-data
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: "10.152.183.188"
+    path: "/exports"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tensorflow-serving-seed-inception
+spec:
+  # storageClassName: rbd
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: tensorflow-serving-data
+  name: tensorflow-serving-data
+spec:
+  # storageClassName: rbd
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Mi
+

@@ -1,0 +1,99 @@
+global:
+  imagePullPolicy: IfNotPresent
+
+moneroCluster:
+  service:
+    name: monero
+  image: 
+    repo: samnco
+    name: xmrminer
+    dockerTag: 2.2.0
+  settings:
+    replicaCount: 3
+    gpuType: cpu
+    nvVersion: 387
+    nodeSelector: "*"
+  resources:
+    # Only add CPU and Memory in here, nvidia GPUs are part of the model already. 
+    requests: 
+      cpu: 5000m
+      memory: 1024Mi
+    limits:
+      cpu: 5000m
+      memory: 4096Mi      
+  configMap: 
+    configTxt: |-
+      "pool_list" : [ { 
+        "pool_address" : "xmrig-proxy.default.svc:3333",
+        "wallet_address" : "etnk1J5msRQJmLJDBcLPuRcHbTtuz8BpWJvS5mD9RooqBzsN2vvxwxA26AeaDVRyegg1fmNY8VuDtSEHt3kcpT5S3eB6WJCWei",
+        "pool_password" : "x",
+        "use_tls" : false,
+        "tls_fingerprint" : "",
+        "use_nicehash": true,
+        "pool_weight": 1000,
+      } ],
+      "currency" : "monero",
+      "call_timeout" : 10,
+      "retry_time" : 30,
+      "giveup_limit" : 0,
+      "verbose_level" : 4,
+      "print_motd" : true,
+      "h_print_time" : 60,
+      "aes_override" : null,
+      "use_slow_memory" : "warn",
+      "tls_secure_algo" : true,
+      "daemon_mode" : false,
+      "flush_stdout" : false,
+      "output_file" : "",
+      "httpd_port" : 3000,
+      "http_login" : "",
+      "http_pass" : "",
+      "prefer_ipv4" : true,
+    cpuTxt: |-
+      "cpu_threads_conf" :
+      [
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 0 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 1 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 2 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 3 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 4 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 5 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 6 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 7 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 8 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 9 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 10 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 11 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 12 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 13 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 14 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 16 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 17 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 18 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 19 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 20 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 21 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 22 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 23 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 24 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 26 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 27 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 28 },
+          { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 29 },
+      ],
+
+serviceMonitor:
+  enable: false
+  labels: 
+    - name: demo
+      value: autoscaling
+
+hpa:
+  enable: false 
+  apiVersion: v2beta1
+  minReplicas: 2
+  maxReplicas: 10
+  metricName: cpu_remaining_capacity
+  targetValue: 100
+
+

@@ -1,0 +1,33 @@
+# Default values for hpa-demo-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 2
+image:
+  repository: luxas/autoscale-demo
+  tag: v0.1.2
+  pullPolicy: IfNotPresent
+service:
+  appsApiVersion: v1beta1
+  name: cluster-loader
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 8080
+resources: 
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+serviceMonitor: 
+  labels: 
+    - key: demo
+      value: autoscaling
+
+hpa:
+  apiVersion: v2beta1
+  minReplicas: 2
+  maxReplicas: 10
+  metricName: http_requests
+  targetValue: 100

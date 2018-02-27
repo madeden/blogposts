@@ -1,0 +1,222 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf-serving-8cpu
+  namespace: default
+spec:
+  ports:
+  - name: grpc
+    port: 9000
+    targetPort: 9000
+  selector:
+    app: tf-serving-8cpu
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tf-serving-8cpu
+  labels: 
+    app: tf-serving-8cpu
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tf-serving-8cpu
+    spec:
+      containers:
+      - image: samnco/tf-serving:cpu
+        name: tf-serving
+        command: ["/entrypoint.sh"]
+        imagePullPolicy: IfNotPresent
+        env: 
+        - name: PORT
+          value: "9000"
+        - name: MODEL_NAME
+          value: "inception"
+        - name: MODEL_PATH
+          value: "/serving/model-data"
+        ports:
+        - containerPort: 9000
+        readinessProbe:
+          tcpSocket:
+            port: 9000
+          timeoutSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 6
+        resources: 
+          requests: 
+            cpu: 8000m
+            memory: 8192Mi
+          limits: 
+            cpu: 8000m
+            memory: 16384Mi            
+        volumeMounts:
+        - mountPath: /serving/tf-serving
+          name: tf-serving-data
+        - mountPath: /serving/model-data
+          name: tf-serving-seed-inception
+      restartPolicy: Always
+      nodeSelector: 
+        nodeType: storage
+      volumes:
+      - name: tf-serving-data
+        hostPath: 
+          path: /tf-data
+          type: Directory
+        # persistentVolumeClaim:
+        #   claimName: tf-serving-data
+      - name: tf-serving-seed-inception
+        hostPath: 
+          path: /seed
+          type: Directory
+        # persistentVolumeClaim:
+        #   claimName: tf-serving-seed-inception
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf-serving-1cpu
+  namespace: default
+spec:
+  ports:
+  - name: grpc
+    port: 9000
+    targetPort: 9000
+  selector:
+    app: tf-serving-1cpu
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tf-serving-1cpu
+  labels: 
+    app: tf-serving-1cpu
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tf-serving-1cpu
+    spec:
+      containers:
+      - image: samnco/tf-serving:cpu
+        name: tf-serving
+        command: ["/entrypoint.sh"]
+        imagePullPolicy: IfNotPresent
+        env: 
+        - name: PORT
+          value: "9000"
+        - name: MODEL_NAME
+          value: "inception"
+        - name: MODEL_PATH
+          value: "/serving/model-data"
+        ports:
+        - containerPort: 9000
+        readinessProbe:
+          tcpSocket:
+            port: 9000
+          timeoutSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 6
+        resources: 
+          requests: 
+            cpu: 1000m
+            memory: 8192Mi
+          limits: 
+            cpu: 1000m
+            memory: 16384Mi            
+        volumeMounts:
+        - mountPath: /serving/tf-serving
+          name: tf-serving-data
+        - mountPath: /serving/model-data
+          name: tf-serving-seed-inception
+      restartPolicy: Always
+      nodeSelector: 
+        nodeType: storage
+      volumes:
+      - name: tf-serving-data
+        hostPath: 
+          path: /tf-data
+          type: Directory
+        # persistentVolumeClaim:
+        #   claimName: tf-serving-data
+      - name: tf-serving-seed-inception
+        hostPath: 
+          path: /seed
+          type: Directory
+        # persistentVolumeClaim:
+        #   claimName: tf-serving-seed-inception
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tf-resizer
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 5051
+    nodePort: 30501
+    targetPort: 5051
+  selector:
+    app: tf-image-resizer
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tf-image-resizer
+  labels: 
+    app: tf-image-resizer
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tf-image-resizer
+    spec:
+      containers:
+      - image: samnco/tf-image-resizer:latest
+        name: tf-image-resizer
+        imagePullPolicy: Always
+        env: 
+        - name: TF_SERVERS
+          value: "tf-8cpu:tf-serving-8cpu.default.svc:9000;tf-1cpu:tf-serving-1cpu.default.svc:9000;tf-gpu:tf-serving-gpu.default.svc:9000"
+        ports:
+        - containerPort: 5051
+        readinessProbe:
+          tcpSocket:
+            port: 5051
+          timeoutSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 5051
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 6
+        resources: 
+          requests: 
+            cpu: 100m
+            memory: 1024Mi
+          limits: 
+            cpu: 5000m
+            memory: 2048Mi            
+      restartPolicy: Always
+---

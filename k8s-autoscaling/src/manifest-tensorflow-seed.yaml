@@ -1,0 +1,41 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tensorflow-serving-seed-inception
+  namespace: default
+spec:
+  template:
+    metadata:
+      name: seed-inception
+    spec:
+      containers:
+      - name: seed
+        image: bitnami/tensorflow-inception:latest
+        command: ["/bin/sh"]
+        # args: ["-c", "curl -o /seed/inception_v3_2016_08_28_frozen.pb.tar.gz https://storage.googleapis.com/download.tensorflow.org/models/inception_v3_2016_08_28_frozen.pb.tar.gz && \
+        #       cd /seed/ && tar -xzf inception_v3_2016_08_28_frozen.pb.tar.gz && \
+        #       rm inception_v3_2016_08_28_frozen.pb.tar.gz && \
+        #       inception_saved_model --checkpoint_dir=/seed/inception-v3 --output_dir=/seed/ && \
+        #       rm -rf inception-v3"]
+        args: [ "-c", "cd /seed/ && \
+              inception_saved_model --checkpoint_dir=/seed/inception-v3 --output_dir=/seed/"]
+        # args: [ "-c", "rm -rf /seed/* && \
+        #       curl -o /seed/inception.tar.gz http://download.tensorflow.org/models/image/imagenet/inception-v3-2016-03-01.tar.gz && \
+        #       cd /seed/ && tar -xzf inception.tar.gz && \
+        #       rm inception.tar.gz && \
+        #       inception_saved_model --checkpoint_dir=/seed/inception-v3 --output_dir=/seed/ && \
+        #       rm -rf inception-v3"]
+        volumeMounts:
+        - name: seed
+          mountPath: /seed
+      restartPolicy: Never
+      nodeSelector: 
+        nodeType: storage
+      volumes:
+      - name: seed
+        hostPath: 
+          path: /seed
+          type: Directory
+        # persistentVolumeClaim:
+        #   claimName: tensorflow-serving-seed-inception

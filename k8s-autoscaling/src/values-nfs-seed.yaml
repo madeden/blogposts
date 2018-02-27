@@ -1,0 +1,52 @@
+# Default values for NFS.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: gcr.io/google_containers/volume-nfs
+  tag: 0.8
+  pullPolicy: IfNotPresent
+service:
+  name: nfs
+  nfsExternalPort: 2049
+  nfsInternalPort: 2049
+  mountdExternalPort: 20048
+  mountdInternalPort: 20048
+  rpcbindExternalPort: 111
+  rpcbindInternalPort: 111
+
+resources:
+  requests:
+   cpu: 100m
+   memory: 128Mi
+  limits:
+   cpu: 100m
+   memory: 128Mi
+
+nodeSelector:
+  nodeType: seed
+
+hostNetwork: false
+
+persistence:
+  # This setup overrides persistence and mounts a hostPath. Use the host path
+  # as the value
+  hostPath: /seed
+
+  ## This volume persists generated configuration files, keys, and certs.
+  ##
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  size: 5Gi
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
+  accessMode: ReadWriteOnce
+  ## This volume is used to store git data and other project files.
+  ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory
+  ##

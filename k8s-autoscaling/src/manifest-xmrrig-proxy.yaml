@@ -1,0 +1,53 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    app: xmrig-proxy
+  name: xmrig-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xmrig-proxy
+  template:
+    metadata:
+      labels:
+        app: xmrig-proxy
+    spec:
+      containers:
+      - image: samnco/xmrrig-proxy
+        imagePullPolicy: IfNotPresent
+        name: xmrig-proxy
+        ports:
+        - name: miner
+          containerPort: 3333
+        env:
+        - name: POOL_URL
+          value: "pool.etn.spacepools.org:3333"
+        - name: USERNAME
+          value: "etnk1J5msRQJmLJDBcLPuRcHbTtuz8BpWJvS5mD9RooqBzsN2vvxwxA26AeaDVRyegg1fmNY8VuDtSEHt3kcpT5S3eB6WJCWei"
+        - name: PASSWORD
+          value: x
+        - name: COIN
+          value: xmr
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2048Mi
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xmrig-proxy
+  labels:
+    app: xmrig-proxy
+spec:
+  ports:
+  - name: miner
+    port: 3333
+    targetPort: 3333
+  selector:
+    app: xmrig-proxy

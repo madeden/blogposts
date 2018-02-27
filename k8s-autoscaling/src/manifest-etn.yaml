@@ -1,0 +1,120 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: electroneum
+  name: electroneum
+spec:
+  replicas: 15
+  selector:
+    matchLabels:
+      app: electroneum
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: electroneum
+    spec:
+      containers:
+      - name: etn
+        command:
+        - /usr/local/bin/xmr-stak-sigint
+        image: samnco/xmrminer:2.2.0-cpu
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 1200m
+            memory: 3Gi
+          requests:
+            cpu: 1000m
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /config
+          name: etn-config
+      # - name: metrics
+      #   image: samnco/mwc-miner-metrics:latest
+      #   imagePullPolicy: Always
+      #   env:
+      #   - name: ELECTROMINE_WALLET
+      #     value: "etnk1J5msRQJmLJDBcLPuRcHbTtuz8BpWJvS5mD9RooqBzsN2vvxwxA26AeaDVRyegg1fmNY8VuDtSEHt3kcpT5S3eB6WJCWei"
+      #   - name: LOAD_INCLUSTER_CONFIG
+      #     value: "true"
+      #   - name: GRAFANA_GRAPH_ID
+      #     value: "1"
+      #   ports:
+      #   - containerPort: 5050
+      #     name: web
+      #   resources:
+      #     limits:
+      #       cpu: 100m
+      #       memory: 2048Mi
+      #     requests:
+      #       cpu: 10m
+      #       memory: 1024Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 5
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: etn-config
+        name: etn-config
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: electroneum
+#   # namespace: etn2
+#   labels:
+#     app: electroneum
+# spec:
+#   type: NodePort
+#   selector:
+#     app: electroneum
+#   ports:
+#   - name: web
+#     nodePort: 30500
+#     port: 80
+#     targetPort: web
+---
+apiVersion: v1
+data:
+  config.txt: "\"pool_list\" : [ { \n  \"pool_address\" : \"xmrig-proxy.default.svc:3333\",\n
+    \ \"wallet_address\" : \"etnk1J5msRQJmLJDBcLPuRcHbTtuz8BpWJvS5mD9RooqBzsN2vvxwxA26AeaDVRyegg1fmNY8VuDtSEHt3kcpT5S3eB6WJCWei\",\n
+    \ \"pool_password\" : \"x\",\n  \"use_tls\" : false,\n  \"tls_fingerprint\" :
+    \"\",\n  \"use_nicehash\": true,\n  \"pool_weight\": 1000,\n} ],\n\"currency\"
+    : \"monero\",\n\"call_timeout\" : 10,\n\"retry_time\" : 30,\n\"giveup_limit\"
+    : 0,\n\"verbose_level\" : 4,\n\"print_motd\" : true,\n\"h_print_time\" : 60,\n\"aes_override\"
+    : null,\n\"use_slow_memory\" : \"warn\",\n\"tls_secure_algo\" : true,\n\"daemon_mode\"
+    : false,\n\"flush_stdout\" : false,\n\"output_file\" : \"\",\n\"httpd_port\" :
+    3000,\n\"http_login\" : \"\",\n\"http_pass\" : \"\",\n\"prefer_ipv4\" : true,"
+  cpu.txt: "\"cpu_threads_conf\" :\n[\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 0 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 1 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 2 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 3 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 4 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 5 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 6 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 7 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 8 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 9 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 10 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 11 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 12 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 13 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 14 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 15 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 16 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 17 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 18 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 19 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 20 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 21 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 22 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 23 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 24 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 25 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 26 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 27 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 28 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 29 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 30 },\n{ \"low_power_mode\" : false, \"no_prefetch\" : false, \"affine_to_cpu\" : 31 },\n],"
+kind: ConfigMap
+metadata:
+  labels:
+    app: electroneum
+  name: etn-config
+---
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2beta1
+metadata:
+  name: electroneum
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: electroneum
+  minReplicas: 15
+  maxReplicas: 145
+  metrics:
+  - type: Object
+    object:
+      target:
+        kind: Service
+        name: cluster-metrics
+      metricName: cpu_capacity_remaining
+      targetValue: 30000
+
